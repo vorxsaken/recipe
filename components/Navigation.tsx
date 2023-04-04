@@ -1,66 +1,80 @@
 import Image from "next/image"
 import Logo from '../assets/images/Food Recipe.png'
-import { AiOutlineSearch, AiOutlineHome, AiOutlineAlert, AiOutlineContacts } from 'react-icons/ai'
-import { BiFoodMenu, BiSearchAlt } from 'react-icons/bi'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { BiSearchAlt } from 'react-icons/bi'
+import TextField from "./TextField"
+import SelectField from "./SelectField"
+import Button from "./Button"
+import FullScreenContent from "./FullScreenContent"
+import { useFullscreenContentContext } from "@/Reducer/FullScreenContentReducer"
+import Menu from "./Menu"
+import BottomMenu from "./BottomMenu"
 
 export default function Navigation() {
-  
+  const [state, dispatch] = useFullscreenContentContext();
+  const nutritions = [
+    'Carbs',
+    'Protein',
+    'Calories',
+    'Fat',
+    'Caffeine',
+    'Calcium',
+    'Cholestrol',
+    'VitaminA',
+    'VitaminC',
+    'VitaminD',
+    'VitaminE',
+    'VitaminK',
+    'VitaminB1',
+    'VitaminB2',
+    'VitaminB5',
+    'VitaminB3',
+    'VitaminB6',
+    'VitaminB12',
+  ]
   const openSearch = () => {
-
+    dispatch({ type: 'SHOW_MODAL' })
   }
 
   return (
-    <div className='w-full h-16 border-b-2 border-slate-100 flex justify-center items-center gap-14 fixed md:top-0 
-    bottom-0 bg-white z-10'>
+    <div className='w-full h-16 border-b-2 border-slate-100 flex justify-between items-center fixed md:top-0 
+    bottom-0 bg-white z-10 md:px-10'>
       <div className="md:flex flex-row justify-center items-center gap-14 hidden">
         <div className="flex justify-center items-center">
-          <Image src={Logo} alt='logo' width={120} />
+          <Image src={Logo} alt='logo' width={130} />
         </div>
-        <div className="flex justify-center items-center gap-6 font-semibold text-slate-800 text-sm">
-          <div className="hover:text-red-500 transition-all duration-300 ease-in-out cursor-pointer">Home</div>
-          <div className="hover:text-red-500 transition-all duration-300 ease-in-out cursor-pointer">About</div>
-          <div className="hover:text-red-500 transition-all duration-300 ease-in-out cursor-pointer">Recipes</div>
-          <div className="hover:text-red-500 transition-all duration-300 ease-in-out cursor-pointer">Contact</div>
-        </div>
+        <Menu />
       </div>
       <div className="md:flex justify-center items-center hidden">
-        <div className="relative">
-          <AiOutlineSearch className="text-md text-slate-800 absolute top-[28%] left-3" />
-          <input type="text" placeholder="Search" className="w-52 h-8 outline-none border border-slate-800 rounded-2xl
-          pl-9 pr-4 text-xs placeholder:text-slate-800" />
-        </div>
+        <BiSearchAlt onClick={() => openSearch()} className="text-2xl cursor-pointer text-slate-700" />
+        <Button text={true}>Login</Button>
       </div>
-      {/* navigation on small screen */}
+      {/* top head on small screen */}
       <div className="w-full p-4 flex justify-center items-center md:hidden fixed top-0 border-b-2 border-slate-100 z-10">
         <div className="flex justify-center items-center">
           <Image src={Logo} alt='logo' width={120} />
         </div>
-        <BiSearchAlt onClick={() => openSearch} className="absolute right-6 text-2xl cursor-pointer" />
+        <BiSearchAlt onClick={() => openSearch()} className="absolute left-6 text-2xl" />
+        <Button text={true} className='absolute right-6 text-sm font-semibold text-slate-600'>Login</Button>
       </div>
-      {/* search dialog */}
-      <div className="w-full h-full fixed bg-slate-800 bg-opacity-5 top-0 flex justify-center items-start px-8 z-20">
-        <div className="w-full h-20 bg-white rounded-lg shadow-lg relative top-24 flex flex-col justify-center items-center">
-          
+      {/* search dialog on small screen */}
+      <FullScreenContent show={state.show}>
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <TextField icon={<AiOutlineSearch />} placeholder={'Search'} />
+          <div className="flex flex-row justify-center items-center gap-2">
+            <SelectField options={nutritions} placeholder='Filter' />
+            <TextField small={true} placeholder='Min' />
+            <TextField small={true} placeholder='Max' />
+          </div>
         </div>
-      </div>
-      <div className="w-full px-6 py-4 flex justify-between items-center border-t-2 border-slate-100 md:hidden">
-        <div className="flex flex-col items-center justify-center">
-          <AiOutlineHome className="text-2xl" />
-          <span className="text-sm">Home</span>
+        <div className="w-full flex flex-col gap-4 justify-center items-center py-8">
+          <BiSearchAlt className="text-8xl text-slate-300" />
+          <p className="text-center text-md text-slate-300">search result in here</p>
         </div>
-        <div className="flex flex-col items-center justify-center">
-          <AiOutlineAlert className="text-2xl" />
-          <span className="text-sm">About</span>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <BiFoodMenu className="text-2xl" />
-          <span className="text-sm">Recipes</span>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <AiOutlineContacts className="text-2xl" />
-          <span className="text-sm">Contact</span>
-        </div>
-      </div>
+        <Button>Terapkan</Button>
+      </FullScreenContent>
+      {/* bottom navigation on small screen */}
+      <BottomMenu />
     </div>
   )
 }
