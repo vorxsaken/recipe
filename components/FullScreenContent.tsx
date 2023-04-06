@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useRef } from "react";
 import { useFullscreenContentContext } from "@/Reducer/FullScreenContentReducer";
 
 export default function FullScreenContent({ children, show = false }: { children: ReactNode, show?: boolean }) {
