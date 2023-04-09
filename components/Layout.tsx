@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     return (
         <>
             <Nav />
-            <main className="md:mt-16">
+            <main className="md:mt-16 flex flex-col gap-10">
                 {children}
             </main>
             <Footer />
