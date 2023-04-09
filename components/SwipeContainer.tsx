@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 
-export default function SwipeContainer({ children }: { children: ReactNode }) {
+export default function SwipeContainer({ children, wrap }: { children: ReactNode, wrap?: boolean }) {
     const [xDown, setXDown] = useState(0);
     const [isMouseDown, setIsMouseDown] = useState(false);
 
@@ -34,7 +34,8 @@ export default function SwipeContainer({ children }: { children: ReactNode }) {
 
     return (
         <div
-            className='w-full overflow-x-auto scrollbar-hide flex gap-4 flex-nowrap select-none cursor-grab'
+            className={`w-full overflow-x-auto scrollbar-hide flex gap-2 md:gap-4 select-none cursor-grab
+            ${wrap ? 'flex-wrap justify-center items-center' : 'flex-nowrap'}`}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
