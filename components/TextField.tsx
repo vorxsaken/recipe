@@ -4,17 +4,27 @@ interface textField {
     placeholder?: string,
     icon?: ReactNode,
     small?: boolean,
+    medium?: boolean,
+    large?: boolean,
     textArea?: boolean,
     width?: number,
-    height?: number
+    height?: number,
+    [key: string]: any
 }
 
-export default function TextField({ placeholder, icon, small, textArea, width, height }: textField) {
+export default function TextField(props: textField) {
+
+    const { placeholder, icon, small, textArea, width, height, medium, large } = props;
 
     const handleInput = (event: any) => {
         event.currentTarget.style.height = 'auto';
         event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
     }
+
+    const textFieldWidth = small ? 'w-20' : medium ? 'w-56' : large ? 'w-80' : 'w-56';
+    const textFieldHeight = small ? 'h-8' : medium ? 'h-11' : large ? 'h-12' : 'h-8';
+    const textFieldRounded = small ? 'rounded-2xl' : medium ? 'rounded-xl' : large ? 'rounded-lg' : 'rounded-2xl';
+    const textFieldIcon = icon ? 'pl-9' : 'pl-4';
 
     return (
         <div className="relative">
@@ -34,12 +44,14 @@ export default function TextField({ placeholder, icon, small, textArea, width, h
                             scrollbar-hide transition-all duration-700 ease-in-out placeholder:text-slate-500'
                             cols={width}
                             placeholder={placeholder}
+                            {...props}
                         />
                     </>
                 ) : (
                     <>
-                        <input type="text" placeholder={placeholder} className={`${small ? 'w-20' : 'w-52'} h-8 outline-none border 
-                       border-slate-800 rounded-2xl ${icon ? 'pl-9' : 'pl-4'} pr-4 text-xs placeholder:text-slate-800`} />
+                        <input type="text" placeholder={placeholder} className={`
+                        ${textFieldWidth} ${textFieldHeight} ${textFieldRounded} ${textFieldIcon} outline-none border 
+                        border-slate-800 pr-4 text-xs placeholder:text-slate-800`} {...props} />
                     </>
                 )
             }
