@@ -3,10 +3,11 @@ import TextField from '../TextField'
 import { BsPlusCircle, BsTrash } from 'react-icons/bs'
 
 interface AddInsOrIng {
-    placeholder: string
+    placeholder: string,
+    number?: boolean
 }
 
-export default function AddList({placeholder}: AddInsOrIng) {
+export default function AddList({placeholder, number}: AddInsOrIng) {
     const [listIng, setlistIng] = useState<any[]>([]);
 
     const addTextField = () => {
@@ -26,7 +27,7 @@ export default function AddList({placeholder}: AddInsOrIng) {
 
     return (
         <div className='w-full'>
-            <ul id="list" className='list-disc list-outside flex flex-col gap-4'>
+            <ul id="list" className={`${number ? 'list-decimal' : 'list-disc'} list-outside flex flex-col gap-4 text-xs`}>
                 <li>
                     <div className='relative'>
                         <TextField borderLess placeholder={`${placeholder} 1`} />
