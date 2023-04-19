@@ -8,13 +8,19 @@ import TextField from "../TextField"
 import SelectField from "../SelectField"
 import Button from "../Button"
 import FullScreenContent from "../FullScreenContent"
-import {useState} from 'react';
+import { useState } from 'react';
+import { signIn, useSession } from 'next-auth/react'
 
 export default function TopMenu() {
     const [showModal, setShowModal] = useState(false);
+    const { data: session } = useSession();
+
+    const navSignButton = session ? <UserMenu /> : <Button onClick={() => signIn('google')} text={true}>Sign In</Button>
+
     const openSearch = () => {
         setShowModal(!showModal);
     }
+
     const nutritions = [
         'Carbs',
         'Protein',
@@ -46,8 +52,7 @@ export default function TopMenu() {
             </div>
             <div className="md:flex justify-center gap-6 items-center hidden">
                 <BiSearchAlt onClick={() => openSearch()} className="text-2xl cursor-pointer text-slate-700" />
-                {/* <Button text={true}>Sign In</Button> */}
-                <UserMenu />
+                {navSignButton}
             </div>
             {/* search dialog on small screen */}
             <FullScreenContent show={showModal} bg={true} onChangeState={openSearch}>
