@@ -10,3 +10,14 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+.checkbox-container {
+    cursor: pointer;
+}
+
+.checkbox-checkmark {
+    background-color: rgba(0,0,0,0.2);
+}
+
+input .checkbox-checkmark {
+    background-color: blue;
+}

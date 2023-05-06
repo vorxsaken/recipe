@@ -19,10 +19,12 @@ export default function TextField(props: textField) {
     const { placeholder, icon, small, textArea, width, height, medium, large, borderLess, number } = props;
 
     const handleInput = (event: any) => {
-        event.currentTarget.style.height = 'auto';
-        event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
+        if (textArea) {
+            event.currentTarget.style.height = 'auto';
+            event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
+        }
 
-        if(number) {
+        if (number) {
             let value = event.target.value;
             let newValue = value.replace(/[^0-9]/g, "");
             event.target.value = newValue;
@@ -31,7 +33,7 @@ export default function TextField(props: textField) {
 
     const textFieldWidth = small ? 'w-20' : medium ? 'w-56' : large ? 'w-80' : 'w-full';
     const textFieldHeight = small ? 'h-8' : medium ? 'h-11' : large ? 'h-12' : 'h-8';
-    const textFieldRounded = small ? 'rounded-2xl' : medium ? 'rounded-xl' : large ? 'rounded-lg' : 'rounded-2xl';
+    const textFieldRounded = small ? 'rounded-md' : medium ? 'rounded-md' : large ? 'rounded-lg' : 'rounded-md';
     const textFieldIcon = icon ? 'pl-9' : 'pl-4';
     const textfieldBorder = borderLess ? 'border-none' : textArea ? 'border-b border-slate-600' : 'border border-slate-800';
 
@@ -61,8 +63,8 @@ export default function TextField(props: textField) {
                         <input type='text' placeholder={placeholder} className={`
                         ${textFieldWidth} ${textFieldHeight} ${textFieldRounded} ${textFieldIcon} ${textfieldBorder}
                         outline-none pr-4 text-xs placeholder:text-slate-800`}
-                        onInput={handleInput}
-                        {...props} />
+                            onInput={handleInput}
+                            {...props} />
                     </>
                 )
             }

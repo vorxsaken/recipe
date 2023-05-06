@@ -1,9 +1,7 @@
-import { useFullscreenContentContext } from "@/Reducer/FullScreenContentReducer"
 import BottomMenu from './BottomMenu'
 import TopMenu from './TopMenu'
 
 export default function Nav() {
-  const [state, dispatch] = useFullscreenContentContext();
 
   return (
     <div className='w-full h-16 border-b-2 border-slate-100 flex justify-between items-center fixed md:top-0 

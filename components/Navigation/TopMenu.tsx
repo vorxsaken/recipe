@@ -59,7 +59,7 @@ export default function TopMenu() {
                 <div className="flex flex-col gap-4 justify-center items-center">
                     <TextField icon={<AiOutlineSearch />} placeholder={'Search'} />
                     <div className="flex flex-row justify-center items-center gap-2">
-                        <SelectField options={nutritions} placeholder='Filter' />
+                        {/* <SelectField options={nutritions} placeholder='Filter' /> */}
                         <TextField small={true} placeholder='Min' />
                         <TextField small={true} placeholder='Max' />
                     </div>
