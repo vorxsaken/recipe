@@ -2,6 +2,7 @@ import Image, { StaticImageData } from 'next/image'
 import { BiTime } from 'react-icons/bi';
 import { AiFillHeart, AiFillStar } from 'react-icons/ai'
 import { GiSpoon } from 'react-icons/gi'
+import Link from 'next/link';
 import Burger from '../assets/images/burger.jpg';
 
 interface recipeCard {
@@ -9,26 +10,28 @@ interface recipeCard {
   title?: string,
   calorie?: string,
   serving?: string,
+  link: string,
   likeEvent?: () => void
 }
 
-export default function RecipeCard({ image, title, calorie, serving, likeEvent }: recipeCard) {
+export default function RecipeCard({ image, title, calorie, serving, link, likeEvent }: recipeCard) {
+
   return (
-    <div className='w-44 h-48 md:w-64 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
-    overflow-hidden rounded-lg'>
-      <div className='w-full h-36 md:h-48 bg-blue-200 overflow-hidden relative group'>
-        <Image src={Burger} alt='burger' fill className='object-cover pointer-events-none' />
-        <div className='w-full p-3 absolute top-0 bg-gradient-to-b  to-black z-10 flex justify-end invisible
-        group-hover:visible'>
-          <AiFillHeart onClick={likeEvent} className='text-3xl text-white cursor-pointer' />
-        </div>
+    <div className='w-44 h-48 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
+    overflow-hidden rounded-lg cursor-pointer relative group'>
+      <Link scroll={false} href={`/?recipeDetails=${link}`} as={`/recipe/${link}`} className='w-full h-48 md:h-56 absolute top-0 z-10'/>
+      <div className='w-auto absolute top-2 right-3 bg-gradient-to-b  to-black z-30 flex justify-end invisible group-hover:visible'>
+        <AiFillHeart onClick={() => {console.log('like')}} className='text-3xl text-white cursor-pointer' />
+      </div>
+      <div className='w-full h-36 md:h-48 bg-blue-200 overflow-hidden relative'>
+        <Image src={image || ''} alt='burger' fill className='object-cover pointer-events-none' />
       </div>
       <div className='w-full flex flex-col text-md md:text-lg pl-2 md:pl-4 text-slate-700 font-semibold'>
-        <span>Delicious</span>
+        <span>{title}</span>
         <div className='flex flex-row gap-2'>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <GiSpoon className='text-red-400' />
-            <span>220 cal</span>
+            <span>{calorie} cal</span>
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <AiFillHeart className='text-red-400' />

@@ -1,13 +1,13 @@
-import { useState, createElement, forwardRef, useImperativeHandle } from 'react'
+import { useState, createElement, forwardRef, useImperativeHandle, useEffect } from 'react'
 import TextField from '../TextField'
 import { BsPlusCircle, BsTrash } from 'react-icons/bs'
 import Button from '../Button'
 
-interface instrucUI { setInstructions: (e: any) => void }
+interface instrucUI { setInstructions: (e: any) => void, values?: string[] }
 
 const AddListInstructions = forwardRef((props: instrucUI, ref) => {
     const [listIns, setlistIns] = useState<any[]>([]);
-    const { setInstructions } = props;
+    const { setInstructions, values } = props;
 
     const addTextField = () => {
         setlistIns([...listIns, textField])
@@ -21,18 +21,34 @@ const AddListInstructions = forwardRef((props: instrucUI, ref) => {
 
     const textField = createElement('li', { key: listIns.length }, createElement(TextField, {
         borderLess: true,
-        placeholder: `Instruction ${listIns.length + 2}`,
-        id: listIns.length + 2
+        placeholder: `Instruction ${listIns.length + 1}`,
+        id: listIns.length + 1
     }))
+
+    const initValue = values?.map((value, index) => {
+        return createElement('li', { key: index }, createElement(TextField, {
+            borderLess: true,
+            placeholder: `Instruction ${index + 1}`,
+            id: index + 1,
+            value: value
+        }))
+    })
+
+    useEffect(() => {
+        if (values) {
+            setlistIns(initValue as any)
+        } else {
+            setlistIns([...listIns, textField])
+        }
+    }, [])
 
     useImperativeHandle(ref, () => ({
         getInstructions() {
             let instructionsArray: Object[] = [];
-            for (let i = 1; i <= listIns.length + 1; i++) {
+            for (let i = 1; i < listIns.length + 1; i++) {
                 let textElement = document.getElementById(`${i}`) as any;
-                instructionsArray = [...instructionsArray, textElement.value ]
+                instructionsArray = [...instructionsArray, textElement.value]
             }
-            
             setInstructions(instructionsArray)
         }
     }))
@@ -45,9 +61,13 @@ const AddListInstructions = forwardRef((props: instrucUI, ref) => {
                 <BsTrash onClick={deleteTextField} className='hover:text-slate-600 cursor-pointer' />
             </div>
             <ul className='list-decimal text-xs flex flex-col gap-4'>
-                <li>
-                    <TextField id='1' borderLess placeholder='Instruction 1' large />
-                </li>
+                {/* {
+                    !values && (
+                        <li>
+                            <TextField id='1' borderLess placeholder='Instruction 1' large />
+                        </li>
+                    )
+                } */}
                 {listIns}
             </ul>
         </div>

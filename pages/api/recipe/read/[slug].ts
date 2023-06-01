@@ -9,6 +9,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         const getRecipe = await prisma.recipe.findUnique({
             where: {
                 id: slug
+            },
+            include: {
+                ingredients: true
             }
         }).catch((error) => {
             throw new Error(error)

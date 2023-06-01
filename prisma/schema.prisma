@@ -78,6 +78,7 @@ model Recipe {
   categories    String[]
   bigImage     String?
   smallImage   String?
+  created_at   Int
   ingredients   Ingredient[]
   comments      Comment[]
   ratings       Rating[]

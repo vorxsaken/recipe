@@ -5,18 +5,20 @@ interface selectFieldUI {
     placeholder?: string,
     options: string[],
     multiple?: boolean,
-    setSelection: (e: any) => void
+    setSelection: (e: any) => void,
+    value?: string[]
 }
 
-export default function SelectField({ placeholder, options, multiple, setSelection }: selectFieldUI) {
-    const [selected, setSelected] = useState<string[]>([])
+export default function SelectField({ placeholder, options, multiple, setSelection, value }: selectFieldUI) {
+    const [selected, setSelected] = useState<string[]>(value || [])
     const [showOptions, setshowOptions] = useState(false)
     const ref = useRef(null);
 
     const checkBoxChange = (e: any) => {
         if (e.currentTarget.checked) {
-            setSelected([...selected, e.currentTarget.value])
-            setSelection(selected);
+            let sel = [...selected, e.currentTarget.value];
+            setSelected(sel);
+            setSelection(sel);
         } else {
             let curr = selected;
             let indexOfCurr = curr.indexOf(e.currentTarget.value);
@@ -25,6 +27,15 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
             setSelection(curr);
         }
     }
+
+    useEffect(() => {
+        if(value) {
+            for(const opt of selected) {
+                const option = document.getElementById(opt) as any;
+                option.checked = true
+            }
+        }
+    }, [])
 
     useEffect(() => {
         const checkIfClickOutside = (e: MouseEvent) => {
@@ -65,8 +76,8 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
                                     <span className='text-sm text-gray-500'>select categories</span>
                                 )
                             }
-                            <div className={`${showOptions ? 'w-1/2' : 'w-0 h-0 invisible'} max-h-80 absolute p-2 bg-white flex flex-col justify-center items-center 
-                            gap-4 -bottom-32 left-0 shadow-2xl z-10 overflow-y-auto`}>
+                            <div className={`${showOptions ? 'w-1/2' : 'w-0 h-0 invisible'} max-h-96 absolute p-2 bg-white flex flex-col justify-center items-center 
+                            gap-4 -bottom-32 left-0 shadow-2xl z-10 overflow-y-auto pt-48`}>
                                 {options.map(option => (
                                     <div className="w-full flex justify-start items-center">
                                         <input onChange={checkBoxChange} className="peer hidden" type="checkbox" value={option} id={option} />

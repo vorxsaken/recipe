@@ -8,19 +8,28 @@ import RecipeIngredient from "./RecipeIngredient";
 import RecipeInstructions from "./RecipeInstructions";
 import StarRating from "../StarRating";
 
-export default function RecipeDetails() {
+interface RecipeDetailsUI {
+    src?: string,
+    title?: string,
+    ingredient?: any[],
+    instructions?: string[]
+
+}
+
+export default function RecipeDetails({src, title, ingredient, instructions}: RecipeDetailsUI) {
+
     return (
         <div className='w-full flex justify-center items-start gap-8 py-14'>
             <div className="w-[600px] flex flex-col justify-center items-center gap-8">
-                <div className='w-full h-96 overflow-hidden rounded-md'>
-                    <Image src={Burger} alt='burger' className="pointer-events-none" />
+                <div className='w-full h-96 overflow-hidden rounded-md relative'>
+                    <Image src={Burger} alt='burger' fill className="pointer-events-none object-cover" />
                 </div>
                 <GiveComments />
                 <Comments />
             </div>
             <div className="w-[600px] flex flex-col gap-6 justify-start items-start">
                 <div className="w-full flex flex-col gap-3">
-                    <TitleRecipe />
+                    <TitleRecipe title={title || ''} />
                     <StarRating />
                     <RecipeInfo />
                 </div>

@@ -9,14 +9,12 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { storage } from '../lib/firebase'
 import { AiFillWarning } from 'react-icons/ai'
 import SelectField from "@/components/SelectField"
-import { useDispatch } from "react-redux"
-import { addRecipe } from "@/store/Reducers/recipeReducer"
 
 interface imageType {
     [key: string]: Blob,
 }
 
-export default function createRecipe() {
+export default function editRecipe() {
     const [image, setimage] = useState<imageType>({});
     const [Ingredients, setIngredients] = useState<Object[]>([])
     const [loadingButton, setloadingButton] = useState(false);
@@ -25,7 +23,6 @@ export default function createRecipe() {
     const instructionsRef = useRef(null);
     var instructions: string[] = [];
     const options = ['Appetizers', 'Soups and stews', 'Salads', 'Pasta', 'Meat', 'Seafood', 'Vegetarian', 'Desserts', 'Breakfast', 'Beverages'];
-    const dispatch = useDispatch();
 
     const addImage = (e: any) => setimage(e);
     const addInstructions = (e: any) => (instructions = e);
@@ -83,7 +80,7 @@ export default function createRecipe() {
             })
         }).then(data => data.json()).then(recipe => {
             setloadingButton(false);
-            dispatch(addRecipe(recipe))
+            console.log(recipe)
         });
     }
 
@@ -103,14 +100,13 @@ export default function createRecipe() {
                     Post
                 </Button>
             </div>
-            <div className="w-[500px]">
+            <div className="w-[500px] flex justify-start items-start gap-8">
                 <TextField
                     id='title'
                     placeholder="Give This Recipe A Name"
                     borderLess
                     textArea
-                    className="placeholder:font-bold text-2xl font-black" 
-                />
+                    className="placeholder:font-bold outline-none text-2xl resize-none font-black" />
             </div>
             <SelectImage onChange={addImage} />
             <div className="w-[500px] flex flex-col gap-6 mt-10">
@@ -131,7 +127,7 @@ export default function createRecipe() {
                     Ingredients
                 </div>
                 <div className="w-full">
-                    <AddListIngredient setIngredient={addIngredient} />
+                    <AddListIngredient value={[]} setIngredient={addIngredient} />
                 </div>
             </div>
             <div className="w-[500px] flex flex-col gap-6 mt-10">

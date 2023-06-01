@@ -14,6 +14,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(417).send('some field empty'); 
             }
 
+            const userId = await prisma.user.findUnique({
+                where: {
+                    email: session.user?.email as any
+                }
+            })
+            
+            
             const createRecipe = await prisma.recipe.create({
                 data: {
                     title: title,
@@ -23,6 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     calorie: calorie,
                     categories: categories,
                     instructions: instructions,
+                    ownerId: userId?.id,
+                    created_at: Date.now(),
                     ingredients: {
                         create: ingredients
                     }

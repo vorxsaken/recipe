@@ -4,9 +4,9 @@ import Burger from '../../assets/images/sbdkajbskjdakjsdk.jpg';
 import { useState, useRef, useEffect } from 'react';
 import Compressor from 'compressorjs';
 
-export default function SelectImage({ onChange }: { onChange: (e: any) => void }) {
+export default function SelectImage({ onChange, value }: { onChange: (e: any) => void, value?: string }) {
     const [image, setimage] = useState<Blob>()
-    const [imageUrl, setImageUrl] = useState('')
+    const [imageUrl, setImageUrl] = useState(value || '')
     const ref = useRef(null)
 
     const compressImage = (uncompressImage: any) => {

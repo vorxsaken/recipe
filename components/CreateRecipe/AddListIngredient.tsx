@@ -3,8 +3,8 @@ import TextField from '../TextField'
 import { BsPlusCircle, BsTrash } from 'react-icons/bs'
 import Button from '../Button'
 
-export default function AddListIngredient({ setIngredient }: {setIngredient: (e: any) => void}) {
-    const [listIng, setlistIng] = useState<any[]>([]);
+export default function AddListIngredient({ setIngredient, value }: {setIngredient: (e: any) => void, value?: any[]}) {
+    const [listIng, setlistIng] = useState<any[]>(value || []);
 
     const addIng = () => {
         const quantity = document.getElementById('quantity') as any;
@@ -35,10 +35,10 @@ export default function AddListIngredient({ setIngredient }: {setIngredient: (e:
 
     const invokeAddList = (e: any) => {
         if(e.key === 'Enter') {
-            e.preventDefault();
             addIng();
             document.getElementById('quantity')?.focus();
         }
+        
     }
 
     return (
@@ -59,7 +59,11 @@ export default function AddListIngredient({ setIngredient }: {setIngredient: (e:
                 {listIng.map((ing, index) => (
                     <li key={index}>
                         <div className='flex justify-between text-sm'>
-                            <span><span>{ing.quantity} {ing.unit}</span>&nbsp; {ing.name}</span>
+                            <div className='flex gap-2 justify-center items-center'>
+                                <div className='w-9'>{ing.quantity}</div>
+                                <div className='w-12'>{ing.unit}</div>
+                                <div >{ing.name}</div>
+                            </div>
                             <BsTrash className='text-lg cursor-pointer hover:text-slate-600' onClick={() => deleteIng(index)} />
                         </div>
                     </li>
