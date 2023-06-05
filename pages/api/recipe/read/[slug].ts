@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { slug } = req.query as any;
     const prisma = new PrismaClient();
 
@@ -11,7 +11,8 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
                 id: slug
             },
             include: {
-                ingredients: true
+                ingredients: true,
+                ratings: true
             }
         }).catch((error) => {
             throw new Error(error)
@@ -19,6 +20,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         return res.send(getRecipe)
     } catch (error) {
+        console.log(error);
         return res.status(500).send(error);
     }
 }

@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 import Lottie from 'lottie-react';
 import loading from '../assets/newScene.json'
 import FullScreenContent from "@/components/FullScreenContent"
-import RecipeDetails from "@/components/RecipeDetails"
+import RecipeDetails from "@/components/RecipeDetails/RecipeDetails"
 import { useRouter } from "next/router"
 
 export default function Home() {
@@ -30,22 +30,22 @@ export default function Home() {
     useEffect(() => {
         const loadRef = lotRef.current as any;
         loadRef.setSpeed(2.5);
-
-        const getter = async () => {
-            await store.dispatch(getInitialRecipe())
-            const recipes = selectAllRecentRecipe.selectAll(store.getState())
+        
+        const getRecipe = async () => {
+            await store.dispatch(getInitialRecipe());
+            const recipes = selectAllRecentRecipe.selectAll(store.getState()) as any
             setRecents(recipes)
         }
 
         return () => {
-            getter()
+            getRecipe()
         }
     }, [])
 
     return (
         <div>
             <FullScreenContent show={!!router.query.recipeDetails} full bg onChangeState={() => router.push('/', '/', { scroll: false })}>
-                <RecipeDetails />
+                <RecipeDetails recipeID={router.query.recipeDetails as string} />
             </FullScreenContent>
             <Layout>
                 <div className={`min-h-[700px] flex flex-col justify-start items-center gap-8 py-10 overflow-hidden`}>
@@ -54,7 +54,7 @@ export default function Home() {
                     </div>
                     <div className="w-full flex justify-center md:justify-start items-start gap-2 md:gap-4 md:pl-10 flex-wrap">
                         {
-                            recents.length > 0 ?
+                            recents.length > 0  ?
                                 recents.map((recent: any) => (
                                     <RecipeCard
                                         key={recent.id}

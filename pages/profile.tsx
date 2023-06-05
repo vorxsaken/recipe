@@ -47,7 +47,7 @@ export default function Profile() {
                         Recipes
                     </div>
                     <div className="w-full flex flex-wrap justify-start items-center gap-4">
-                        <RecipeCard />
+                        {/* user post profile */}
                     </div>
                 </div>
             </div >

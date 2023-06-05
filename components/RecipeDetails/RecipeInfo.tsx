@@ -1,7 +1,7 @@
 import { BiTime, BiBowlHot, BiStar } from 'react-icons/bi'
 import { GiSpoon } from 'react-icons/gi'
 
-export default function RecipeInfo() {
+export default function RecipeInfo({servingTime, servingTotal, rating, calorie}: {servingTime?: string, servingTotal?: string, rating?: string, calorie?: string}) {
     return (
         <div className="flex justify-start items-start gap-4">
             <div className="flex justify-center items-center gap-2">
@@ -18,7 +18,7 @@ export default function RecipeInfo() {
             </div>
             <div className="flex justify-center items-center gap-2">
                 <GiSpoon className="text-lg text-red-400" />
-                <span className="text-sm text-slate-700">220 cal</span>
+                <span className="text-sm text-slate-700">{calorie} cal</span>
             </div>
         </div>
     )

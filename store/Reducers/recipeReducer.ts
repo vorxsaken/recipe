@@ -15,7 +15,6 @@ export const getInitialRecipe = createAsyncThunk('recipe/fetchRecipe', async () 
             skip: 0
         })
     })
-
     const recipe = await response.json();
     return recipe;
 })
