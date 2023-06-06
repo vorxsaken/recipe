@@ -109,7 +109,17 @@ model Comment {
   recipeId  String  @db.ObjectId
   owner     User    @relation(fields: [ownerId], references: [id])
   ownerId   String  @db.ObjectId
+  reply     ReplyComment[]
   @@map("comments")
+}
+
+model ReplyComment {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  author    String
+  text      String
+  comment   Comment @relation(fields: [commentId], references: [id])
+  commentId String  @db.ObjectId
+  @@map("replyComments")
 }
 
 model Rating {
