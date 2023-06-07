@@ -102,20 +102,22 @@ model Ingredient {
 }
 
 model Comment {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  author    String
-  text      String
-  recipe    Recipe  @relation(fields: [recipeId], references: [id])
-  recipeId  String  @db.ObjectId
-  owner     User    @relation(fields: [ownerId], references: [id])
-  ownerId   String  @db.ObjectId
-  reply     ReplyComment[]
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  author        String
+  text          String
+  recipe        Recipe  @relation(fields: [recipeId], references: [id])
+  recipeId      String  @db.ObjectId
+  owner         User    @relation(fields: [ownerId], references: [id])
+  ownerId       String  @db.ObjectId
+  reply         ReplyComment[]
+  created_at    Int
   @@map("comments")
 }
 
 model ReplyComment {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   author    String
+  inquired  String
   text      String
   comment   Comment @relation(fields: [commentId], references: [id])
   commentId String  @db.ObjectId
