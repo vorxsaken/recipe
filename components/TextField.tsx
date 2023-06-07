@@ -67,6 +67,7 @@ export default function TextField(props: textField) {
                             scrollbar-hide transition-all duration-700 ease-in-out placeholder:text-slate-500 ${textfieldBorder} ${className}`}
                             cols={width}
                             placeholder={placeholder}
+                            {...props}
                         />
                     </>
                 ) : (
