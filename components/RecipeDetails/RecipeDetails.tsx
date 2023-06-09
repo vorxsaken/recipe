@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import Skeletons from "../Skeletons";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 
 const fetcher = async (url: string) => {
     const fetching = await fetch(url);
@@ -19,15 +19,21 @@ const fetcher = async (url: string) => {
 }
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
-    const { data: recipe  } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID}`, fetcher);
-    const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID}`, fetcher);
+    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher);
+    const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher);
     const { data: session } = useSession();
     const userId = useSelector((state: any) => state.user.userInfo.id);
-    var orderedComments: any[] = [];
+    const [commentOrdered, setcommentOrdered] = useState<any[]>([])
 
     const getrating = () => {
         const ratingValue = recipe.ratings.length > 0 ? recipe.ratings.filter((rating: any) => rating.recipeId === recipeID || rating.ownerId === userId)[0] : 0;
         return ratingValue;
+    }
+
+    const appendComment = (comment: any) => {
+        let currentComment = [...commentOrdered];
+        currentComment.unshift(comment);
+        setcommentOrdered(currentComment);
     }
 
     const sendRating = async (value: number) => {
@@ -43,11 +49,13 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
         }).then(res => res.json()).then(json => console.log(json)).catch((error) => console.log(error))
     }
 
-    if(comments) {
-        const authorComment = comments.filter((comment: any) => comment.ownerId === userId).sort((x: any, y: any) => x.created_at > y.created_at);
-        const otherComment = comments.filter((comment: any) => comment.ownerId !== userId).sort((x: any, y: any) => x.created_at > y.created_at);
-        orderedComments = authorComment.concat(otherComment)
-    }
+    useEffect(() => {
+        if (comments) {
+            const authorComment = comments.filter((comment: any) => comment.ownerId === userId).sort((x: any, y: any) => x.created_at < y.created_at);
+            const otherComment = comments.filter((comment: any) => comment.ownerId !== userId).sort((x: any, y: any) => x.created_at < y.created_at);
+            setcommentOrdered(authorComment.concat(otherComment));
+        }
+    }, [comments])
 
     if (!recipe) {
         return (
@@ -77,8 +85,8 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
                 <div className='w-full h-96 overflow-hidden rounded-md relative'>
                     <Image src={recipe.bigImage} alt='burger' fill className="pointer-events-none object-cover" />
                 </div>
-                <GiveComments id={recipeID} author={session?.user?.name as string} ownerId={userId} />
-                <Comments comments={orderedComments} />
+                <GiveComments id={recipeID} author={session?.user?.name as string} ownerId={userId} appendComment={appendComment} />
+                <Comments comments={commentOrdered} author={session?.user?.name as string} userId={userId} />
             </div>
             <div className="w-[600px] flex flex-col gap-6 justify-start items-start">
                 <div className="w-full flex flex-col gap-3">
