@@ -13,6 +13,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 author: author,
                 ownerId: ownerId,
                 created_at: Date.now()
+            },
+            include: {
+                owner: true
             }
         }).catch(error => { throw new Error(error) });
 
