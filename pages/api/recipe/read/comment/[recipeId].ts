@@ -11,7 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 recipeId: recipeId as string 
             },
             include: {
-                reply: true,
+                reply: {
+                    include: {
+                        owner: true
+                    }
+                },
                 owner: true
             }
         }).catch(error => {throw new Error(error)})

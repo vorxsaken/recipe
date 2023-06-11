@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, forwardRef } from 'react'
 
 interface textField {
     id?: any,
@@ -14,7 +14,7 @@ interface textField {
     borderLess?: boolean,
     number?: boolean,
     className?: string,
-    [key: string]: any
+    [key: string]: any,
 }
 
 export default function TextField(props: textField) {
@@ -47,7 +47,7 @@ export default function TextField(props: textField) {
             textValue.value = defaultValue
         }
     }, [])
-
+    
     return (
         <div className="relative">
             {

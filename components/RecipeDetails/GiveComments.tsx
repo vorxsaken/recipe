@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import TextField from '../TextField'
 import Button from '../Button'
+import { useDispatch } from 'react-redux'
+import { putComment, putReply, putRecentComment } from '@/store/Reducers/commentsReducer'
 
 interface GiveCommentUI {
     id: string,
@@ -12,12 +14,14 @@ interface GiveCommentUI {
     inquired?: string
 }
 
-export default function GiveComments({ id, author, ownerId, reply, inquired, hideReply, appendComment }: GiveCommentUI) {
+export default function GiveComments({ id, author, ownerId, reply, inquired, hideReply }: GiveCommentUI) {
     const [showButton, setShowButton] = useState(reply ? true : false);
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const sendComment = async () => {
-        const comment = (document.getElementById('comment') as HTMLInputElement).value
+        const comment = (document.getElementById(id) as HTMLInputElement).value;
+
         if (comment) {
             setLoading(true);
             await fetch(`http://localhost:3000/api/recipe/create/${reply ? 'reply' : 'comment'}`, {
@@ -33,8 +37,9 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
                 .then((data) => data.json())
                 .then((json) => {
                     setLoading(false);
-                    if (appendComment) appendComment(json);
-                    console.log(json);
+                    reply ? dispatch(putReply(json)) : dispatch(putComment(json));
+                    dispatch(putRecentComment(json));
+                    hideReply && hideReply();
                 })
                 .catch((error) => {
                     setLoading(false);
@@ -50,7 +55,7 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
                 textArea={true}
                 width={70}
                 placeholder={reply ? 'give reply for this comment' : 'what do you think about this recipe ?'}
-                id="comment"
+                id={id}
                 small={reply}
             />
             {

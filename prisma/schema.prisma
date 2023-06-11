@@ -46,6 +46,7 @@ model User {
     collections   Collection[]
     recipes       Recipe[]
     comments      Comment[]
+    replies       ReplyComment[]
     rating        Rating[]
     @@map("users")
 }
@@ -115,12 +116,15 @@ model Comment {
 }
 
 model ReplyComment {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  author    String
-  inquired  String
-  text      String
-  comment   Comment @relation(fields: [commentId], references: [id])
-  commentId String  @db.ObjectId
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  author      String
+  inquired    String
+  text        String
+  comment     Comment @relation(fields: [commentId], references: [id])
+  commentId   String  @db.ObjectId
+  owner       User    @relation(fields: [ownerId], references: [id])
+  ownerId     String  @db.ObjectId
+  created_at  Int
   @@map("replyComments")
 }
 
