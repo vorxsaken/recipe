@@ -66,7 +66,7 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     return (
         <div className='w-full flex justify-center items-start gap-8 pt-4 pb-14'>
             <div className="w-[600px] flex flex-col justify-center items-center gap-8">
-                <div className='w-full h-96 overflow-hidden rounded-md relative'>
+                <div className='w-full h-96 overflow-hidden rounded-md relative bg-gray-200'>
                     <Image src={recipe.bigImage} alt='burger' fill className="pointer-events-none object-cover" />
                 </div>
                 <GiveComments id={recipeID} author={session?.user?.name as string} ownerId={userId} />
