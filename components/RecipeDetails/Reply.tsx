@@ -13,7 +13,7 @@ export default function Reply({ replies }: { replies: any[] }) {
             {
                 replies.length > 0 && (
                     <div onClick={() => setShowReply(!showReply)} className="text-[0.65rem] text-gray-500 cursor-pointer hover:text-black select-none">
-                        -------&nbsp;&nbsp;&nbsp;&nbsp; View replies ({replies.length})
+                        -------&nbsp;&nbsp;&nbsp;&nbsp; {showReply ? 'Hide' : 'View'} replies ({replies.length})
                     </div>
                 )
             }
