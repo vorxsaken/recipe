@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from 'next/image'
 import { BiTime } from 'react-icons/bi';
-import { AiFillHeart, AiFillStar } from 'react-icons/ai'
+import { AiFillFolderAdd, AiFillStar } from 'react-icons/ai'
 import { GiSpoon } from 'react-icons/gi'
 import Link from 'next/link';
 import Burger from '../assets/images/burger.jpg';
@@ -20,8 +20,8 @@ export default function RecipeCard({ image, title, calorie, serving, link, likeE
     <div className='w-44 h-48 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
     overflow-hidden rounded-lg cursor-pointer relative group'>
       <Link scroll={false} href={`/?recipeDetails=${link}`} as={`/recipe/${link}`} className='w-full h-48 md:h-56 absolute top-0 z-10'/>
-      <div className='w-auto absolute top-2 right-3 bg-gradient-to-b  to-black z-30 flex justify-end invisible group-hover:visible'>
-        <AiFillHeart onClick={() => {console.log('like')}} className='text-3xl text-white cursor-pointer' />
+      <div className='w-auto absolute top-2 right-3 bg-gradient-to-b bg-white to-black z-30 flex justify-end invisible group-hover:visible rounded-md p-1'>
+        <AiFillFolderAdd onClick={() => {console.log('like')}} className='text-2xl text-slate-500 cursor-pointer' />
       </div>
       <div className='w-full h-36 md:h-48 bg-blue-200 overflow-hidden relative'>
         <Image src={image || ''} alt='burger' fill className='object-cover pointer-events-none' />
@@ -34,7 +34,7 @@ export default function RecipeCard({ image, title, calorie, serving, link, likeE
             <span>{calorie} cal</span>
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
-            <AiFillHeart className='text-red-400' />
+            <AiFillFolderAdd className='text-red-400' />
             <span>10</span>
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
