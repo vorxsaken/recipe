@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AiOutlineHeart } from "react-icons/ai";
+import { AiFillFolderAdd } from "react-icons/ai";
 import { Poppins } from 'next/font/google'
 const lobster = Poppins({ weight: '400', subsets: ['latin'] });
 import CreateCollection from './CreateCollection';
@@ -22,9 +22,11 @@ export default function TitleRecipe({ title }: { title: string }) {
             <span className={`w-full text-4xl font-bold text-slate-800 ${lobster.className}`}>
                 {title}
             </span>
-            <AiOutlineHeart
-                onClick={showSaveRecipeEvent}
-                className="text-4xl text-slate-800 cursor-pointer" />
+            <div className='bg-gray-100 hover:bg-gray-200 group p-2 rounded-xl cursor-pointer' onClick={showSaveRecipeEvent}>
+                <AiFillFolderAdd
+                    className="text-3xl text-slate-500 group-hover:text-slate-600" 
+                />
+            </div>
             <SaveRecipe show={showSaveRecipe} closeEvent={showSaveRecipeEvent} createEvent={showCreateCollectionEvent} />
             <CreateCollection show={showCreateCollection} changeShowEvent={showCreateCollectionEvent} />
         </div>
