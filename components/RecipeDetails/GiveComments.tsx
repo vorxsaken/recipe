@@ -37,8 +37,12 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
                 .then((data) => data.json())
                 .then((json) => {
                     setLoading(false);
-                    reply ? dispatch(putReply(json)) : dispatch(putComment(json));
-                    dispatch(putRecentComment(json));
+                    if(reply) {
+                        dispatch(putReply(json));
+                        dispatch(putRecentComment(json))
+                    } else {
+                        dispatch(putComment(json))
+                    }
                     hideReply && hideReply();
                 })
                 .catch((error) => {
