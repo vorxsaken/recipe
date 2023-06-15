@@ -25,6 +25,8 @@ export default function Reply({ replies }: { replies: any[] }) {
                             replies.map(reply => (
                                 <div key={reply.id}>
                                     <CommentCard
+                                        email={reply.owner.email}
+                                        commentId={reply.id}
                                         image={reply.owner.image}
                                         author={reply.author}
                                         comment={reply.text}
@@ -53,6 +55,8 @@ export default function Reply({ replies }: { replies: any[] }) {
                                     return (
                                         <div key={recentComment.id}>
                                             <CommentCard
+                                                email={recentComment.owner.email}
+                                                commentId={recentComment.id}
                                                 image={recentComment.owner.image}
                                                 author={recentComment.author}
                                                 comment={recentComment.text}
