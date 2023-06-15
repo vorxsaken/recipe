@@ -30,10 +30,28 @@ const commentsSlice = createSlice({
         putRecentComment(state, actions) {
             const currentRecentComment: any[] = state.recentComment;
             currentRecentComment.push(actions.payload);
+        },
+        deleteComment(state, actions) {
+            const comments: any[] = state.comment;
+            state.comment = comments.filter(comment => comment.id !== actions.payload) as never[];
+            
+        },
+        deleteReply(state, actions) {
+            const comments: any[] = state.comment;
+            comments.forEach(comment => {
+                comment.reply.filter((rep: any) => rep.id !== actions.payload)
+            })
         }
     }
 })
 
 export default commentsSlice.reducer;
 
-export const { setComments, putComment, putReply, putRecentComment } = commentsSlice.actions
+export const { 
+    setComments, 
+    putComment, 
+    putReply, 
+    putRecentComment, 
+    deleteComment, 
+    deleteReply 
+} = commentsSlice.actions
