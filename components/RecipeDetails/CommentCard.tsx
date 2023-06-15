@@ -1,15 +1,55 @@
 import Image from "next/image"
 import { BsThreeDotsVertical, BsTrash } from 'react-icons/bs'
 import { useState, useEffect, useRef } from "react"
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../assets/loading-black.json';
+import { useDispatch } from "react-redux";
+import { deleteComment, deleteReply } from "@/store/Reducers/commentsReducer";
+import { useSelector } from "react-redux";
 
-export default function CommentCard({ comment, image, author, inquired }: { comment: string, image: string, author: string, inquired?: string }) {
+interface CommentCardUI { 
+    commentId: string, 
+    comment: string, 
+    image: string, 
+    author: string, 
+    inquired?: string,
+    email: string
+}
+
+export default function CommentCard({ commentId, comment, image, author, inquired, email }: CommentCardUI) {
     const [showOptions, setshowOptions] = useState(false);
     const [showThreeDots, setshowThreeDots] = useState(false);
+    const [loadingDelete, setloadingDelete] = useState(false);
+    const userEmail = useSelector((state: any) => state.user.userInfo.email)
     const ref = useRef(null)
+    const dispatch = useDispatch();
+
+    const visibleThreeDots = () => {
+        if (email == userEmail) {
+            setshowThreeDots(true)
+        }
+    }
 
     const hideThreeDots = () => {
         if (showOptions) setshowThreeDots(true)
         else setshowThreeDots(false)
+    }
+
+    const deletePost = () => {
+        setloadingDelete(true);
+        fetch(`http://localhost:3000/api/recipe/delete/comment`, {
+            method: 'POST',
+            body: JSON.stringify({
+                commentId: commentId,
+                inquired: inquired ? true : false,
+                email: email
+            })
+        })
+            .then(() => {
+                inquired ? dispatch(deleteReply(commentId)) : dispatch(deleteComment(commentId));
+                setloadingDelete(false);
+            })
+            .catch(error => console.log(error))
     }
 
     useEffect(() => {
@@ -17,6 +57,7 @@ export default function CommentCard({ comment, image, author, inquired }: { comm
             const current = ref.current as any;
             if (showOptions && ref.current && !current.contains(e.target)) {
                 setshowOptions(false);
+                setshowThreeDots(false);
             }
         }
 
@@ -30,7 +71,7 @@ export default function CommentCard({ comment, image, author, inquired }: { comm
     return (
         <div
             className="flex justify-start items-start gap-4"
-            onMouseEnter={() => setshowThreeDots(true)}
+            onMouseEnter={() => visibleThreeDots()}
             onMouseLeave={() => hideThreeDots()}
         >
             <div className="w-10 h-10 overflow-hidden rounded-full flex justify-center items-center relative">
@@ -52,10 +93,18 @@ export default function CommentCard({ comment, image, author, inquired }: { comm
                         </div>
                         {
                             showOptions && (
-                                <div ref={ref} className="min-w-[90px] absolute flex flex-col justify-start items-start gap-2 py-1 bg-white drop-shadow-xl text-sm rounded-lg">
-                                    <span className="w-full flex justify-start items-center gap-2 hover:bg-gray-100 px-6 py-2">
-                                        <BsTrash className="text-lg text-slate-800" />
-                                        <span className="text-base">Delete</span>
+                                <div ref={ref} className="min-w-[90px] absolute flex flex-col justify-start items-start gap-2 py-1 bg-white drop-shadow-md text-sm rounded-lg">
+                                    <span onClick={deletePost} className="w-full h-8 flex justify-center items-center gap-2 hover:bg-gray-100 px-6 py-2 overflow-y-hidden">
+                                        {
+                                            loadingDelete ? (
+                                                <Lottie className="w-16 text-slate-600 pt-2" animationData={loadingAnimation} />
+                                            ) : (
+                                                <>
+                                                    <BsTrash className="text-lg text-slate-800" />
+                                                    <span className="text-base">Delete</span>
+                                                </>
+                                            )
+                                        }
                                     </span>
                                 </div>
                             )
