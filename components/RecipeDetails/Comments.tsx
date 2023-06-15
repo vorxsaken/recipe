@@ -54,9 +54,11 @@ export default function Comments({ comments, author, userId }: { comments: any[]
                 commentOrdered.comment.map((comment: any) => (
                     <div key={comment.id} className="flex flex-col justify-start items-start gap-2">
                         <CommentCard
+                            commentId={comment.id}
                             comment={comment.text}
                             author={comment.author}
                             image={comment.owner.image}
+                            email={comment.owner.email}
                         />
                         <CommentInfo
                             id={comment.id}
