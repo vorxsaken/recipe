@@ -7,7 +7,7 @@ export default function SaveRecipe({ show, createEvent, closeEvent }: { show: bo
     return (
         <FullScreenContent show={show} onChangeState={closeEvent} bg >
             <BsX onClick={closeEvent} className="absolute top-4 right-4 text-3xl cursor-pointer" />
-            <div className="w-full p-4 bg-white flex flex-col justify-center items-center font-bold mt-6">
+            <div className="w-full p-4 bg-white flex flex-col justify-center items-center font-bold">
                 <div onClick={createEvent} className="w-full p-4 flex justify-start items-center gap-4 cursor-pointer">
                     <BsPlus className="text-5xl text-slate-800" />
                     <span>Create Collection</span>
