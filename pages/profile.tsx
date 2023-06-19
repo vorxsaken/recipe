@@ -4,15 +4,47 @@ import Image from "next/image"
 import RecipeCard from "@/components/RecipeCard"
 import Button from "@/components/Button"
 import { BsPlus, BsCheck2 } from 'react-icons/bs'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from "react-redux"
+import { mergeRecipes } from "@/store/Reducers/userReducer"
+import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
+import Observer from "@/components/Observer"
 
 export default function Profile() {
+    const userId = useSelector((state: any) => state.user.userInfo.id);
+    const userRecipe = useSelector((state: any) => state.user.recipes);
+    const skip = useSelector((state: any) => state.user.recipeSkip);
     const [isNotFollow, setIsNotFollow] = useState(true);
+    const dispatch = useDispatch();
+    const [showLoad, setshowLoad] = useState(true)
+    const CHECK_END_OF_PAGE_VARIABLE = 10;
+
+    const fetchRecipes = async () => {
+        if (userId) {
+            fetch('http://localhost:3000/api/user/read/recipe', {
+                method: 'POST',
+                body: JSON.stringify({
+                    skip: skip,
+                    userId: userId
+                })
+            })
+                .then(res => res.json())
+                .then(json => {
+                    if (json.length < CHECK_END_OF_PAGE_VARIABLE) setshowLoad(false);
+                    dispatch(mergeRecipes(json));
+                })
+                .catch(error => console.log(error))
+        }
+
+    }
+
     const followed = () => {
         setIsNotFollow(!isNotFollow);
     }
+
     return (
         <Layout>
+            <RecipeDetailsModal route="/profile" />
             <div className="min-h-[700px] flex flex-col justify-start items-center gap-10 pb-10">
                 <div className="flex justify-start items-start gap-4 mt-10">
                     <div className="w-44 h-44 rounded-full overflow-hidden bg-slate-300 relative">
@@ -47,9 +79,28 @@ export default function Profile() {
                         Recipes
                     </div>
                     <div className="w-full flex flex-wrap justify-start items-center gap-4">
-                        {/* user post profile */}
+                        {
+                            userRecipe.map((recipe: any) => (
+                                <>
+                                    <RecipeCard
+                                        title={recipe.title}
+                                        image={recipe.smallImage}
+                                        calorie={recipe.calorie}
+                                        recipeId={recipe.id}
+                                        link={`/profile/?recipeDetails=${recipe.id}`}
+                                    />
+                                </>
+                            ))
+                        }
                     </div>
                 </div>
+                {
+                    showLoad && (
+                        <>
+                            <Observer trigger={() => fetchRecipes()} />
+                        </>                        
+                    )
+                }
             </div >
         </Layout >
     )

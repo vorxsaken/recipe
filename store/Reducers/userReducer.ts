@@ -12,15 +12,28 @@ const userSlice = createSlice({
         userInfo: {
             id: ''
         },
+        collections: [],
+        recipes: [],
+        recipeSkip: 0,
         isUserInfoFetched: false
     },
-    reducers: {},
+    reducers: {
+        mergeRecipes(state, actions) {
+            state.recipes = state.recipes.concat(actions.payload);
+            state.recipeSkip += 10;
+        },
+        resetCollection(state, actions) {
+            state.collections = actions.payload.collections;
+        }
+    },
     extraReducers(builder) {
         builder.addCase(getUserInfo.fulfilled, (state, actions) => {
             state.userInfo = actions.payload;
-            state.isUserInfoFetched = true
+            state.collections = actions.payload.collections;
+            state.isUserInfoFetched = true;
         })
     }
 })
 
+export const { resetCollection, mergeRecipes } = userSlice.actions;
 export default userSlice.reducer
