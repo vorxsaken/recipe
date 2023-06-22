@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { database } from "../../../_base";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { recipeId } = req.query;
-    const prisma = new PrismaClient();
 
     try {
-        const getComments = await prisma.comment.findMany({
+        const getComments = await database.comment.findMany({
             where: {
                 recipeId: recipeId as string 
             },

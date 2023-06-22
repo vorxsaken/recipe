@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { database } from "../../_base";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { recipeId, comment, author, ownerId } = JSON.parse(req.body);
-    const prisma = new PrismaClient();
 
     try {
-        const sendComment = await prisma.comment.create({
+        const sendComment = await database.comment.create({
             data: {
                 recipeId: recipeId,
                 text: comment,
@@ -15,7 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 created_at: Date.now()
             },
             include: {
-                owner: true
+                owner: true,
+                reply: true
             }
         }).catch(error => { throw new Error(error) });
 

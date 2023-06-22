@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { database } from '../../_base';
 import { authOptions } from '../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { title, smallImage, categories, bigImage, description, calorie, instructions, ingredients } = JSON.parse(req.body);
     const session = await getServerSession(req, res, authOptions);
-    const prisma = new PrismaClient();
 
     if(session) {
         try {
@@ -14,14 +13,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(417).send('some field empty'); 
             }
 
-            const userId = await prisma.user.findUnique({
+            const userId = await database.user.findUnique({
                 where: {
                     email: session.user?.email as any
                 }
             })
             
             
-            const createRecipe = await prisma.recipe.create({
+            const createRecipe = await database.recipe.create({
                 data: {
                     title: title,
                     smallImage: smallImage,

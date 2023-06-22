@@ -1,25 +1,47 @@
 import { getServerSession } from 'next-auth';
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { database } from '../../_base';
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { commentId, email } = JSON.parse(req.body);
+    const { commentId, inquired, email } = JSON.parse(req.body);
     const session = await getServerSession(req, res, authOptions);
-    const prisma = new PrismaClient();
 
     try {
-        if(email === session?.user?.email) {
-            const deleteComment = await prisma.comment.delete({
-                where: {
-                    id: commentId as string
-                }
-            }).catch(error => {throw new Error(error)})
-    
+        if (email === session?.user?.email) {
+            let deleteComment;
+
+            if (inquired) {
+                deleteComment = await database.replyComment.delete({
+                    where: {
+                        id: commentId as string
+                    }
+                }).catch(error => { throw new Error(error) })
+            } else {
+                database.comment.update({
+                    where: {
+                        id: commentId as string
+                    },
+                    data: {
+                        reply: {
+                            deleteMany: {}
+                        }
+                    }
+                })
+                    .then(async () => {
+                        deleteComment = await database.comment.delete({
+                            where: {
+                                id: commentId as string
+                            }
+                        }).catch(error => { throw new Error(error) })
+                    })
+                    .catch(error => { throw new Error(error) })
+            }
+
             res.status(200).send(deleteComment)
         }
 
-        res.status(401).send('different user')
+        res.status(401).send('not current user')
 
     } catch (error) {
         res.status(500).send(error);

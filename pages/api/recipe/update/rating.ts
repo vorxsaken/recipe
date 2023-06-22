@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client';
+import { database } from '../../_base';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { ratingId, value } = JSON.parse(req.body);
-    const prisma = new PrismaClient();
 
     try {
-        const updateRating = await prisma.rating.update({
+        const updateRating = await database.rating.update({
             where: {
                 id: ratingId
             },

@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { database } from '../../_base';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { skip } = JSON.parse(req.body);
-    const prisma = new PrismaClient();
 
     if (skip != undefined) {
         try {
-            const getRecipe = await prisma.recipe.findMany({
+            const getRecipe = await database.recipe.findMany({
                 skip: skip,
                 take: 3,
                 orderBy: {

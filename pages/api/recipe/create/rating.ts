@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { database } from "../../_base";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { value, author, recipeId, ownerId } = JSON.parse(req.body);
-    const prisma = new PrismaClient();
 
     try {
-        const giveRating = await prisma.rating.create({
+        const giveRating = await database.rating.create({
             data: {
                 value: value,
                 author: author,
