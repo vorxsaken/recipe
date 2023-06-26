@@ -4,24 +4,45 @@ import { AiFillFolderAdd, AiFillStar } from 'react-icons/ai'
 import { GiSpoon } from 'react-icons/gi'
 import Link from 'next/link';
 import Burger from '../assets/images/burger.jpg';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 interface recipeCard {
+  recipeId: string,
   image?: StaticImageData,
   title?: string,
   calorie?: string,
   serving?: string,
   link: string,
+  shallow?: boolean,
+  asLink?: boolean,
   likeEvent?: () => void
 }
 
-export default function RecipeCard({ image, title, calorie, serving, link, likeEvent }: recipeCard) {
+export default function RecipeCard({ recipeId, image, title, calorie, serving, link, likeEvent, shallow, asLink }: recipeCard) {
+  const collections = useSelector((state: any) => state.user.collections);
+  const [isSaved, setisSaved] = useState(false);
+  const isAs = asLink ? `/recipe/${recipeId}` : link;
+
+  useEffect(() => {
+    if (collections) {
+      for (let i = 0; i < collections.length; i++) {
+        if (collections[i].recipeId.some((id: any) => id === recipeId)) {
+          setisSaved(true);
+          break;
+        }
+        setisSaved(false)
+      }
+    }
+  }, [collections])
 
   return (
     <div className='w-44 h-48 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
     overflow-hidden rounded-lg cursor-pointer relative group'>
-      <Link scroll={false} href={`/?recipeDetails=${link}`} as={`/recipe/${link}`} className='w-full h-48 md:h-56 absolute top-0 z-10'/>
-      <div className='w-auto absolute top-2 right-3 bg-gradient-to-b bg-white to-black z-30 flex justify-end invisible group-hover:visible rounded-md p-1'>
-        <AiFillFolderAdd onClick={() => {console.log('like')}} className='text-2xl text-slate-500 cursor-pointer' />
+      <Link scroll={false} shallow={shallow} href={link} as={isAs}  className='w-full h-48 md:h-56 absolute top-0 z-10' />
+      <div className={`w-auto absolute top-2 right-3 bg-gradient-to-b to-black z-10 flex justify-end 
+      invisible group-hover:visible rounded-md p-1 ${isSaved ? 'bg-red-50' : 'bg-white'}`}>
+        <AiFillFolderAdd onClick={() => { console.log('like') }} className={`text-2xl cursor-pointer ${isSaved ? 'text-red-500' : 'text-slate-500'}`} />
       </div>
       <div className='w-full h-36 md:h-48 bg-blue-200 overflow-hidden relative'>
         <Image src={image || ''} alt='burger' fill className='object-cover pointer-events-none' />

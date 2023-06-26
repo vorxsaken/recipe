@@ -33,7 +33,6 @@ const recipeSlice = createSlice({
             })
             .addCase(getInitialRecipe.fulfilled, (state, actions) => {
                 state.status = 'success'
-                console.log(state)
                 recipeAdapter.upsertMany(state, actions.payload)
             })
             .addCase(getInitialRecipe.rejected, (state, actions) => {

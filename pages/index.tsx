@@ -6,26 +6,13 @@ import { getInitialRecipe, selectAllRecentRecipe } from '../store/Reducers/recip
 import { useState, useEffect, useRef } from 'react'
 import Lottie from 'lottie-react';
 import loading from '../assets/newScene.json'
-import FullScreenContent from "@/components/FullScreenContent"
-import RecipeDetails from "@/components/RecipeDetails/RecipeDetails"
-import { useRouter } from "next/router"
+import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 
 export default function Home() {
     const [recents, setRecents] = useState<any[]>([])
     const pileButt = ['Recent', 'Following'];
     const pileButtUrl = ['/home', '/home/following']
     const lotRef = useRef(null);
-    const router = useRouter();
-
-    useEffect(() => {
-        const body = document.body as any
-        if (!!router.query.recipeDetails) {
-            body.style.overflow = 'hidden'
-        } else {
-            body.style.overflow = 'auto'
-        }
-
-    }, [router.query.recipeDetails])
 
     useEffect(() => {
         const loadRef = lotRef.current as any;
@@ -44,9 +31,7 @@ export default function Home() {
 
     return (
         <div>
-            <FullScreenContent show={!!router.query.recipeDetails} full bg onChangeState={() => router.push('/', '/', { scroll: false })}>
-                <RecipeDetails recipeID={router.query.recipeDetails as string} />
-            </FullScreenContent>
+            <RecipeDetailsModal route="/" />
             <Layout>
                 <div className={`min-h-[700px] flex flex-col justify-start items-center gap-8 py-10 overflow-hidden`}>
                     <div className="w-full flex justify-center items-center mt-10 md:mt-0">
@@ -57,11 +42,13 @@ export default function Home() {
                             recents.length > 0  ?
                                 recents.map((recent: any) => (
                                     <RecipeCard
+                                        recipeId={recent.id}
                                         key={recent.id}
                                         image={recent.smallImage}
                                         title={recent.title}
                                         calorie={recent.calorie}
-                                        link={recent.id}
+                                        asLink
+                                        link={`/?recipeDetails=${recent.id}`}
                                     />
                                 )) : (
                                     <div className="w-full py-8 flex justify-center items-center">

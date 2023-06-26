@@ -26,7 +26,7 @@ export default function Collection() {
                 <div className="w-full flex justify-start items-center gap-8 flex-wrap">
                     {
                         [...Array(3)].map(i => (
-                            <RecipeCard key={i} />
+                            <RecipeCard  key={i} />
                         ))
                     }
                 </div>

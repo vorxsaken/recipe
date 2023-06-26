@@ -10,12 +10,7 @@ import useSWR from 'swr';
 import Skeletons from "../Skeletons";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
-
-const fetcher = async (url: string) => {
-    const fetching = await fetch(url);
-    const result = await fetching.json();
-    return result;
-}
+import { fetcher } from "@/utils";
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher, {revalidateOnFocus: false});
@@ -74,7 +69,7 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
             </div>
             <div className="w-[600px] flex flex-col gap-6 justify-start items-start">
                 <div className="w-full flex flex-col gap-3">
-                    <TitleRecipe title={recipe.title} />
+                    <TitleRecipe owner={recipe.owner.name} ownerId={recipe.owner.id} recipeId={recipe.id} title={recipe.title} />
                     <StarRating value={getrating().value} starAction={value => sendRating(value)} />
                     <RecipeInfo calorie={recipe.calorie} />
                     <div className="text-slate-600 text-sm bg-slate-50 rounded-lg p-2">

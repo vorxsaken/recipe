@@ -13,9 +13,9 @@ import { signIn, useSession } from 'next-auth/react'
 
 export default function TopMenu() {
     const [showModal, setShowModal] = useState(false);
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
-    const navSignButton = session ? <UserMenu /> : <Button onClick={() => signIn('google')} text={true}>Sign In</Button>
+    const navSignButton = status === 'authenticated' ? <UserMenu /> : <Button onClick={() => signIn('google')} text={true}>Sign In</Button>
 
     const openSearch = () => {
         setShowModal(!showModal);
