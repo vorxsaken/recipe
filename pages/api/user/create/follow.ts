@@ -3,35 +3,34 @@ import { database } from "../../_base";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { userId, userDotId } = JSON.parse(req.body);
-    
+
     try {
         const setFollower = await database.follower.create({
             data: {
-                userId: userDotId as string
+                userId: userDotId
             }
-        }).catch(error => {throw new Error(error)})
+        })
 
         const setFollowing = await database.following.create({
             data: {
-                userId: userId as string
-            }
-        }).catch(error => {throw new Error(error)})
-
-        await database.userFollow.create({
-            data: {
-                followerId: setFollower.id,
                 userId: userId
             }
         })
 
-        await database.userFollow.create({
-            data:{
-                followingId: setFollowing.id,
-                userId: userDotId
-            }
+        await database.userFollow.createMany({
+            data: [
+                {
+                    followerId: setFollower.id,
+                    userId: userId
+                },
+                {
+                    followingId: setFollowing.id,
+                    userId: userDotId
+                }
+            ]
         })
-        
-        res.status(200).send({message: 'success'});
+
+        res.status(200).send({ message: 'success' });
 
     } catch (error) {
         console.log(error);

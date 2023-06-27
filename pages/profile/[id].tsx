@@ -16,16 +16,17 @@ type User = {
     image: string
 }
 
-export default function Profile({ user, totalRecipes, totalFollower, totalFollowing }: { user: User, totalRecipes: string, totalFollower: any, totalFollowing: any }) {
+export default function Profile({ user, totalRecipes, foll }: { user: User, totalRecipes: string, foll: any }) {
     const userId = useSelector((state: any) => state.user.userInfo.id);
     const [userRecipe, setuserRecipe] = useState<any[]>([]);
-    const [followerCount, setfollowerCount] = useState<number>(totalFollower[0]?._count?.userFollow || 0)
+    const [followerCount, setfollowerCount] = useState<number>(foll?._count?.follower || 0)
     const skip = useSelector((state: any) => state.user.recipeSkip);
     const [isNotFollow, setIsNotFollow] = useState(true);
     const [showLoad, setshowLoad] = useState(true)
     const CHECK_END_OF_PAGE_VARIABLE = 10;
-    const CHECK_IF_FOLLOW = totalFollower[0]?.userFollow?.some((follow: any) => follow.user.id === userId) || false
-
+    const CHECK_IF_FOLLOW = foll?.follower?.some((follow: any) => follow.userFollow.user.id === userId) || false
+    
+    console.log('follow', foll)
     const fetchRecipes = async () => {
         fetch('http://localhost:3000/api/user/read/recipe', {
             method: 'POST',
@@ -122,7 +123,7 @@ export default function Profile({ user, totalRecipes, totalFollower, totalFollow
     useEffect(() => {
         setuserRecipe([]);
         setshowLoad(true);
-        setfollowerCount(totalFollower[0]?._count?.userFollow || 0);
+        setfollowerCount(foll?._count?.follower || 0);
         if(CHECK_IF_FOLLOW) setIsNotFollow(false);
     }, [user.id])
 
@@ -149,7 +150,7 @@ export default function Profile({ user, totalRecipes, totalFollower, totalFollow
                                     Follower
                                 </span>
                                 <span>
-                                    <span className="font-bold text-gray-600">{totalFollowing[0]?._count?.userFollow || 0}</span>&nbsp;
+                                    <span className="font-bold text-gray-600">{foll?._count?.following || 0}</span>&nbsp;
                                     Following
                                 </span>
                             </div>
@@ -189,60 +190,92 @@ export const getServerSideProps = async (req: NextApiRequest, res: NextApiRespon
         }
     })
 
-    const totalFollower = await prisma.follower.findMany({
+    const foll = await prisma.user.findUnique({
         where: {
-            userId: id as string
+            id: id as string
         },
         select: {
             _count: {
                 select: {
-                    userFollow: true
+                    follower: true,
+                    following: true
                 }
             },
-            userFollow: {
-                include: {
-                    user: {
+            follower: {
+                select: {
+                    userFollow: {
                         select: {
-                            id: true,
-                            name: true,
-                            image: true
+                            user: true
                         }
                     }
                 }
-            }
+            },
+            following: {
+                select: {
+                    userFollow: {
+                        select: {
+                            user: true
+                        }
+                    }
+                }
+            },
+
         }
     })
 
-    const totalFollowing = await prisma.following.findMany({
-        where: {
-            userId: id as string
-        },
-        select: {
-            _count: {
-                select: {
-                    userFollow: true
-                }
-            },
-            userFollow: {
-                select: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            image: true
-                        }
-                    }
-                }
-            }
-        }
-    })
+    // const totalFollower = await prisma.follower.findMany({
+    //     where: {
+    //         userId: id as string
+    //     },
+    //     select: {
+    //         _count: {
+    //             select: {
+    //                 userFollow: true
+    //             }
+    //         },
+    //         userFollow: {
+    //             include: {
+    //                 user: {
+    //                     select: {
+    //                         id: true,
+    //                         name: true,
+    //                         image: true
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
+
+    // const totalFollowing = await prisma.following.findMany({
+    //     where: {
+    //         userId: id as string
+    //     },
+    //     select: {
+    //         _count: {
+    //             select: {
+    //                 userFollow: true
+    //             }
+    //         },
+    //         userFollow: {
+    //             select: {
+    //                 user: {
+    //                     select: {
+    //                         id: true,
+    //                         name: true,
+    //                         image: true
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
 
     return {
         props: {
             user,
             totalRecipes,
-            totalFollower,
-            totalFollowing
+            foll
         }
     }
 }
