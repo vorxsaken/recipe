@@ -26,7 +26,6 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     const CHECK_END_OF_PAGE_VARIABLE = 10;
     const CHECK_IF_FOLLOW = foll?.follower?.some((follow: any) => follow.userFollow.user.id === userId) || false
     
-    console.log('follow', foll)
     const fetchRecipes = async () => {
         fetch('http://localhost:3000/api/user/read/recipe', {
             method: 'POST',
@@ -222,54 +221,6 @@ export const getServerSideProps = async (req: NextApiRequest, res: NextApiRespon
 
         }
     })
-
-    // const totalFollower = await prisma.follower.findMany({
-    //     where: {
-    //         userId: id as string
-    //     },
-    //     select: {
-    //         _count: {
-    //             select: {
-    //                 userFollow: true
-    //             }
-    //         },
-    //         userFollow: {
-    //             include: {
-    //                 user: {
-    //                     select: {
-    //                         id: true,
-    //                         name: true,
-    //                         image: true
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // })
-
-    // const totalFollowing = await prisma.following.findMany({
-    //     where: {
-    //         userId: id as string
-    //     },
-    //     select: {
-    //         _count: {
-    //             select: {
-    //                 userFollow: true
-    //             }
-    //         },
-    //         userFollow: {
-    //             select: {
-    //                 user: {
-    //                     select: {
-    //                         id: true,
-    //                         name: true,
-    //                         image: true
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // })
 
     return {
         props: {
