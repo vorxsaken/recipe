@@ -19,6 +19,7 @@ type User = {
 export default function Profile({ user, totalRecipes, foll }: { user: User, totalRecipes: string, foll: any }) {
     const userId = useSelector((state: any) => state.user.userInfo.id);
     const [userRecipe, setuserRecipe] = useState<any[]>([]);
+    const [followLoading, setfollowLoading] = useState(false)
     const [followerCount, setfollowerCount] = useState<number>(foll?._count?.follower || 0)
     const skip = useSelector((state: any) => state.user.recipeSkip);
     const [isNotFollow, setIsNotFollow] = useState(true);
@@ -43,8 +44,9 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
 
     }
 
-    const follow = () => {
-        fetch(`http://localhost:3000/api/user/create/follow`, {
+    const unfollow = (unfollow: boolean) => {
+        setfollowLoading(true)
+        fetch(`http://localhost:3000/api/user/${unfollow ? 'delete/unfollow' : 'create/follow'}`, {
             method: 'POST',
             body: JSON.stringify({
                 userId: userId,
@@ -52,8 +54,9 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
             })
         })
             .then(() => {
-                setIsNotFollow(false);
-                setfollowerCount(followerCount + 1);
+                setIsNotFollow(unfollow);
+                setfollowerCount(unfollow ? followerCount - 1 : followerCount + 1);
+                setfollowLoading(false);
             })
             .catch(error => console.log(error));
     }
@@ -102,15 +105,15 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
             Edit Profile
         </Button>
     ) : (
-        <Button small text={isNotFollow}>
+        <Button small text={isNotFollow} loading={followLoading}>
             {
                 !isNotFollow ? (
-                    <div className="flex flex-row gap-1 select-none">
+                    <div className="flex flex-row gap-1 select-none" onClick={() => unfollow(true)}>
                         <BsCheck2 className="text-lg" />
                         <span className="text-sm font-thin">Followed</span>
                     </div>
                 ) : (
-                    <div className="flex flex-row gap-1 select-none" onClick={follow}>
+                    <div className="flex flex-row gap-1 select-none" onClick={() => unfollow(false)}>
                         <BsPlus className="text-lg" />
                         <span className="text-sm font-thin">Follow</span>
                     </div>

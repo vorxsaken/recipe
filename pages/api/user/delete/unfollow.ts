@@ -5,15 +5,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { userId, userDotId } = JSON.parse(req.body);
 
     try {
-        database.follower.updateMany({
+        await database.user.update({
             where: {
-                userId: userDotId
+                id: userDotId
             },
             data: {
-                
+                follower: {
+                    deleteMany: {
+                        idString: userId
+                    }
+                }
+            }
+        }).catch(error => { throw new Error(error) })
+
+        await database.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                following: {
+                    deleteMany: {
+                        idString: userDotId
+                    }
+                }
             }
         })
-    } catch (error) {
+
+        res.status(200).send({ message: 'success' })
         
+    } catch (error) {
+        res.status(500).send(error)
     }
 }

@@ -21,7 +21,7 @@ export default function Button(props: button) {
             {...props}>
             {
                 loading ? (
-                    <Lottie className={`${text ? 'w-16 mt-1' : 'w-20'}`} animationData={text ? blackLoading : loadingAnimation} />
+                    <Lottie className={`${text ? 'w-14 mt-1' : 'w-20'}`} animationData={text ? blackLoading : loadingAnimation} />
                 ) : children
             }
         </div>

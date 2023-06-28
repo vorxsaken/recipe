@@ -7,13 +7,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const setFollower = await database.follower.create({
             data: {
-                userId: userDotId
+                userId: userDotId,
+                idString: userId
             }
         })
 
         const setFollowing = await database.following.create({
             data: {
-                userId: userId
+                userId: userId,
+                idString: userDotId
             }
         })
 
