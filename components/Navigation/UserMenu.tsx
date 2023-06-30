@@ -3,22 +3,19 @@ import Image from 'next/image';
 import { BiAddToQueue, BiLogOut, BiSave, BiUser } from 'react-icons/bi'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import { useSelector } from 'react-redux';
 
 export default function UserMenu() {
-    const { data } = useSession();
-    const userAvatar = data?.user?.image as any;
-    const userId = useSelector((state: any) => state.user.userInfo.id);
+    const user = useSelector((state: any) => state.user.userInfo);
 
     return (
         <div className='relative group'>
-            <div className='w-8 h-8 rounded-full overflow-hidden cursor-pointer relative'>
-                <Image src={userAvatar} alt='avatar' fill className='object-cover' />
+            <div className='w-8 h-8 rounded-full overflow-hidden cursor-pointer relative bg-gray-500'>
+                <Image src={user.image} alt='avatar' fill className='object-cover' />
             </div>
             <div className='w-52 py-2 absolute top-8 -left-40 bg-white rounded-lg drop-shadow-lg flex-col justify-center items-center
             text-sm text-slate-800 group-hover:flex hidden delay-200'>
-                <Link href={`/profile/${userId}`} as={`/profile/${userId}`} className='w-full relative px-6 py-4 flex gap-4 justify-start items-center hover:bg-gray-100 cursor-pointer'>
+                <Link href={`/profile/${user.id}`} as={`/profile/${user.id}`} className='w-full relative px-6 py-4 flex gap-4 justify-start items-center hover:bg-gray-100 cursor-pointer'>
                     <BiUser className='text-xl' />
                     <span>Profile</span>
                 </Link>
