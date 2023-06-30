@@ -18,6 +18,9 @@ const userSlice = createSlice({
         isUserInfoFetched: false
     },
     reducers: {
+        setUser(state, actions) {
+            state.userInfo = actions.payload;
+        },
         mergeRecipes(state, actions) {
             state.recipes = state.recipes.concat(actions.payload);
             state.recipeSkip += 10;
@@ -35,5 +38,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetCollection, mergeRecipes } = userSlice.actions;
+export const { resetCollection, mergeRecipes, setUser } = userSlice.actions;
 export default userSlice.reducer
