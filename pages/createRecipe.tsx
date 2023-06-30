@@ -5,16 +5,12 @@ import AddListIngredient from "@/components/CreateRecipe/AddListIngredient"
 import AddListInstructions from "@/components/CreateRecipe/AddListInstructions"
 import FullScreenContent from "@/components/FullScreenContent"
 import { useState, useRef } from 'react'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
-import { storage } from '../lib/firebase'
 import { AiFillWarning } from 'react-icons/ai'
 import SelectField from "@/components/SelectField"
 import { useDispatch } from "react-redux"
 import { addRecipe } from "@/store/Reducers/recipeReducer"
-
-interface imageType {
-    [key: string]: Blob,
-}
+import { uploadImages, imageType } from "@/utils"
+import Router from "next/router";
 
 export default function createRecipe() {
     const [image, setimage] = useState<imageType>({});
@@ -36,23 +32,6 @@ export default function createRecipe() {
         setshowAlertModal(!showAlertModal);
     }
 
-    const uploadImages = () => {
-        return new Promise((resolve) => {
-            const smallImageRef = ref(storage, `images/${Date.now()}-small`);
-            const bigImageRef = ref(storage, `images/${Date.now()}-big`);
-            uploadBytes(smallImageRef, image.smallImage).then(async () => {
-                uploadBytes(bigImageRef, image.bigImage).then(async () => {
-                    const smallImageUrl = await getDownloadURL(smallImageRef);
-                    const bigImageUrl = await getDownloadURL(bigImageRef);
-                    resolve({
-                        smallImage: smallImageUrl,
-                        bigImage: bigImageUrl
-                    })
-                })
-            })
-        })
-    }
-
     const postRecipe = async () => {
         setloadingButton(true);
         const TitleTextField = document.getElementById('title') as any;
@@ -68,7 +47,7 @@ export default function createRecipe() {
             return;
         };
 
-        const imageUrl = await uploadImages() as any;
+        const imageUrl = await uploadImages(image.smallImage, image.bigImage) as any;
         fetch('http://localhost:3000/api/recipe/create', {
             method: 'POST',
             body: JSON.stringify({
@@ -96,7 +75,7 @@ export default function createRecipe() {
                 </div>
             </FullScreenContent>
             <div className="w-full flex justify-between items-center py-4 px-6">
-                <Button text>
+                <Button text onClick={() => Router.back()}>
                     Cancel
                 </Button>
                 <Button onClick={postRecipe} loading={loadingButton}>
@@ -109,7 +88,8 @@ export default function createRecipe() {
                     placeholder="Give This Recipe A Name"
                     borderLess
                     textArea
-                    className="placeholder:font-bold text-2xl font-black" 
+                    bigPlaceholder
+                    autoGrow
                 />
             </div>
             <SelectImage onChange={addImage} />
@@ -117,8 +97,8 @@ export default function createRecipe() {
                 <div className="w-full text-2xl font-bold">
                     Basic Information
                 </div>
-                <TextField id='description' textArea placeholder="add description ..." />
-                <TextField id='calorie' placeholder="add Calorie ..." textArea borderLess number />
+                <TextField id='description' textArea placeholder="add description ..." autoGrow />
+                <TextField id='calorie' placeholder="add Calorie ..." textArea borderLess number autoGrow />
             </div>
             <div className="w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
