@@ -61,6 +61,7 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
                 placeholder={reply ? 'give reply for this comment' : 'what do you think about this recipe ?'}
                 id={id}
                 small={reply}
+                autoGrow
             />
             {
                 showButton && (
