@@ -9,11 +9,13 @@ import { useState, useEffect } from 'react'
 import { useSelector } from "react-redux"
 import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 import Observer from "@/components/Observer"
+import Link from "next/link";
 
 type User = {
     id: string,
     name: string,
-    image: string
+    image: string,
+    description: string
 }
 
 export default function Profile({ user, totalRecipes, foll }: { user: User, totalRecipes: string, foll: any }) {
@@ -26,7 +28,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     const [showLoad, setshowLoad] = useState(true)
     const CHECK_END_OF_PAGE_VARIABLE = 10;
     const CHECK_IF_FOLLOW = foll?.follower?.some((follow: any) => follow.userFollow.user.id === userId) || false
-    
+
     const fetchRecipes = async () => {
         fetch('http://localhost:3000/api/user/read/recipe', {
             method: 'POST',
@@ -101,9 +103,11 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     )
 
     const userButton = userId === user.id ? (
-        <Button small text>
-            Edit Profile
-        </Button>
+        <Link href={'/profile/edit'}>
+            <Button small text>
+                Edit Profile
+            </Button>
+        </Link>
     ) : (
         <Button small text={isNotFollow} loading={followLoading}>
             {
@@ -126,7 +130,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         setuserRecipe([]);
         setshowLoad(true);
         setfollowerCount(foll?._count?.follower || 0);
-        if(CHECK_IF_FOLLOW) setIsNotFollow(false);
+        if (CHECK_IF_FOLLOW) setIsNotFollow(false);
     }, [user.id])
 
     return (
@@ -157,9 +161,8 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
                                 </span>
                             </div>
                         </div>
-                        <div className="text-xs font-medium text-zinc-500">
-                            Don't forget to run the necessary Prisma commands (e.g., prisma generate, prisma migrate) to apply the changes to
-                            your Prisma client and database
+                        <div className="text-xs text-zinc-800">
+                            {user.description}
                         </div>
                         {userButton}
                     </div>
@@ -182,7 +185,8 @@ export const getServerSideProps = async (req: NextApiRequest, res: NextApiRespon
         select: {
             id: true,
             name: true,
-            image: true
+            image: true,
+            description: true
         }
     })
 
