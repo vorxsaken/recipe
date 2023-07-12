@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TextField from '../TextField'
 import { BsPlusCircle, BsTrash } from 'react-icons/bs'
 import Button from '../Button'
@@ -31,6 +31,7 @@ export default function AddListIngredient({ setIngredient, value }: {setIngredie
         var currIng = [...listIng];
         currIng.splice(index , 1);
         setlistIng(currIng);
+        setIngredient(currIng);
     }
 
     const invokeAddList = (e: any) => {
@@ -40,6 +41,10 @@ export default function AddListIngredient({ setIngredient, value }: {setIngredie
         }
         
     }
+
+    useEffect(() => {
+        if(value) setIngredient(value);
+    }, [])
 
     return (
         <div className='w-full flex flex-col gap-8'>
