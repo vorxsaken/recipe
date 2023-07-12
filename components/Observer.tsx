@@ -26,7 +26,7 @@ export default function Observer({trigger}: {trigger: () => void}) {
 
     return (
         <div ref={ref} className="w-full flex justify-center items-center mt-6">
-            <Lottie className="w-24" animationData={LoadingAnimation} />
+            <Lottie className="w-36" animationData={LoadingAnimation} />
         </div>
     )
 }
