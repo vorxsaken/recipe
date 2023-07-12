@@ -11,7 +11,8 @@ interface selectFieldUI {
 
 export default function SelectField({ placeholder, options, multiple, setSelection, value }: selectFieldUI) {
     const [selected, setSelected] = useState<string[]>(value || [])
-    const [showOptions, setshowOptions] = useState(false)
+    const [showOptions, setshowOptions] = useState(false);
+    const [yPosition, setyPosition] = useState('');
     const ref = useRef(null);
 
     const checkBoxChange = (e: any) => {
@@ -28,12 +29,21 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
         }
     }
 
+    const selectBoxPosition = () => {
+        const getrect = document.getElementById('selectBox')?.getBoundingClientRect();
+        let yPosition = getrect?.y || 0;
+        yPosition = yPosition > 400 ? 350 : yPosition
+        setyPosition(`-${yPosition}px`);
+        setshowOptions(!showOptions);
+    }
+
     useEffect(() => {
         if(value) {
             for(const opt of selected) {
                 const option = document.getElementById(opt) as any;
                 option.checked = true
             }
+            setSelection(value)
         }
     }, [])
 
@@ -65,8 +75,11 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
                 ) : (
                     <div ref={ref}>
                         <div className="w-full px-4 min-h-14 py-3 flex flex-wrap gap-2 justify-start items-center border border-slate-400 relative 
-                        cursor-pointer rounded-md"
-                            onClick={() => setshowOptions(!showOptions)}>
+                            cursor-pointer rounded-md"
+                            onClick={selectBoxPosition}
+                            id='selectBox'
+                        
+                        >
                             {
                                 selected.length > 0 ? selected.map(select => (
                                     <div className='min-w-[100px] px-4 py-2 text-center rounded-3xl bg-slate-200 text-slate-800 text-sm'>
@@ -77,7 +90,9 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
                                 )
                             }
                             <div className={`${showOptions ? 'w-1/2' : 'w-0 h-0 invisible'} max-h-96 absolute p-2 bg-white flex flex-col justify-center items-center 
-                            gap-4 -bottom-32 left-0 shadow-2xl z-10 overflow-y-auto pt-48`}>
+                            gap-4 left-0 shadow-2xl z-10 overflow-y-auto pt-48`}
+                            style={{top: yPosition}}
+                            >
                                 {options.map(option => (
                                     <div className="w-full flex justify-start items-center">
                                         <input onChange={checkBoxChange} className="peer hidden" type="checkbox" value={option} id={option} />
