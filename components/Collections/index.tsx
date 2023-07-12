@@ -1,38 +1,54 @@
 import React from 'react'
 import Image from 'next/image';
-import Burger from '../../assets/images/burger.jpg';
-import Image1 from '../../assets/images/sbdkajbskjdakjsdk.jpg';
-import Image2 from '../../assets/images/wallpaperflare.com_wallpaper (10).jpg';
-import Image3 from '../../assets/images/wallpaperflare.com_wallpaper.jpg';
+import Router from 'next/router';
+import { useDispatch } from 'react-redux';
+import { setTempCollection } from '@/store/Reducers/userReducer';
 
-interface collections {
-
-}
-
-export default function Collections(props: collections) {
-
-  const { } = props;
+export default function Collections(props: {kollection: any}) {
+  const dispatch = useDispatch();
+  const { kollection } = props;
+  
+  const ToCollection = () => {
+    dispatch(setTempCollection(kollection))
+    Router.push('/collections/collection')
+  }
 
   return (
-    <div className='flex flex-col gap-3 cursor-pointer' {...props}>
-      <div className='w-[420px] h-60 flex justify-start items-start rounded-2xl overflow-hidden gap-1'>
-        <div className='w-[70%] h-full overflow-hidden'>
-          <Image src={Burger} alt="preview Image" className='h-full pointer-events-none' />
+    <div onClick={ToCollection} className='flex flex-col gap-1 cursor-pointer' {...props}>
+      <div className='w-[380px] h-60 flex justify-start items-start rounded-2xl overflow-hidden gap-1'>
+        <div className='w-[70%] h-full overflow-hidden relative bg-gray-200'>
+          {
+            kollection.recipes[0]?.bigImage && (
+              <Image src={kollection.recipes[0].bigImage} alt="" fill className='object-cover pointer-events-none' />
+            )
+          }
         </div>
         <div className='w-[30%] h-full flex flex-col justify-start items-center gap-1'>
-          <div className='w-full h-[33%] overflow-hidden'>
-            <Image src={Image1} alt="image preview 1" className='h-full pointer-events-none' />
+          <div className='w-full h-[33%] overflow-hidden relative bg-gray-200'>
+            {
+              kollection.recipes[1]?.bigImage && (
+                <Image src={kollection.recipes[1].bigImage} alt="" fill className='object-cover pointer-events-none' />
+              )
+            }
           </div>
-          <div className='w-full h-[33%] overflow-hidden'>
-            <Image src={Image3} alt="image preview 2" className='h-full pointer-events-none' />
+          <div className='w-full h-[33%] overflow-hidden relative bg-gray-200'>
+            {
+              kollection.recipes[2]?.bigImage && (
+                <Image src={kollection.recipes[1].bigImage} alt="" fill className='object-cover pointer-events-none' />
+              )
+            }
           </div>
-          <div className='w-full h-[34%] overflow-hidden'>
-            <Image src={Image2} alt="image preview 3" className='h-full pointer-events-none' />
+          <div className='w-full h-[34%] overflow-hidden relative bg-gray-200'>
+            {
+              kollection.recipes[3]?.bigImage && (
+                <Image src={kollection.recipes[3].bigImage} alt="" fill className='object-cover pointer-events-none' />
+              )
+            }
           </div>
         </div>
       </div>
       <div className='text-xl font-semibold'>
-        Collection Name
+        {kollection.name}
       </div>
     </div>
   )
