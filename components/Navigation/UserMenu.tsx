@@ -23,7 +23,7 @@ export default function UserMenu() {
                     <BiAddToQueue className='text-xl' />
                     <span>Create Recipe</span>
                 </Link>
-                <Link href="/collections" className='w-full relative px-6 py-4 flex gap-4 justify-start items-center hover:bg-gray-100 cursor-pointer'>
+                <Link href={`/collections/${user.id}`} className='w-full relative px-6 py-4 flex gap-4 justify-start items-center hover:bg-gray-100 cursor-pointer'>
                     <BiSave className='text-xl' />
                     <span>Saved Recipes</span>
                 </Link>

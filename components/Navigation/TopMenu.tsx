@@ -5,7 +5,6 @@ import UserMenu from './UserMenu'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BiSearchAlt } from 'react-icons/bi'
 import TextField from "../TextField"
-import SelectField from "../SelectField"
 import Button from "../Button"
 import FullScreenContent from "../FullScreenContent"
 import { useState } from 'react';
@@ -15,32 +14,12 @@ export default function TopMenu() {
     const [showModal, setShowModal] = useState(false);
     const { data: session, status } = useSession();
 
-    const navSignButton = status === 'authenticated' ? <UserMenu /> : <Button onClick={() => signIn('google')} text={true}>Sign In</Button>
+    const navSignButton = status === 'authenticated' ? <UserMenu /> : status === "unauthenticated" ?
+    <Button onClick={() => signIn('google')} text={true}>Sign In</Button> : <span></span>
 
     const openSearch = () => {
         setShowModal(!showModal);
     }
-
-    const nutritions = [
-        'Carbs',
-        'Protein',
-        'Calories',
-        'Fat',
-        'Caffeine',
-        'Calcium',
-        'Cholestrol',
-        'VitaminA',
-        'VitaminC',
-        'VitaminD',
-        'VitaminE',
-        'VitaminK',
-        'VitaminB1',
-        'VitaminB2',
-        'VitaminB5',
-        'VitaminB3',
-        'VitaminB6',
-        'VitaminB12',
-    ]
 
     return (
         <>
