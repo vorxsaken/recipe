@@ -2,19 +2,21 @@ import FullScreenContent from "../FullScreenContent"
 import TextField from "../TextField"
 import Button from "../Button"
 import { BsX } from 'react-icons/bs'
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { mergeCollections, resetCollection } from "@/store/Reducers/userReducer"
 import { useState } from "react"
 
-interface CreateCollectionUI { 
-    recipeId: string, 
-    show: boolean, 
+interface CreateCollectionUI {
+    recipeId: string,
+    show: boolean,
     changeShowEvent: () => void,
-    successFetchColl: (data: any) => void 
+    successFetchColl: (data: any) => void
 }
-export default function CreateCollection({ recipeId, show, changeShowEvent, successFetchColl }: CreateCollectionUI ) {
+export default function CreateCollection({ recipeId, show, changeShowEvent, successFetchColl }: CreateCollectionUI) {
     const userId = useSelector((state: any) => state.user.userInfo.id);
-    const [loading, setloading] = useState(false)
-    
+    const [loading, setloading] = useState(false);
+    const dispatch = useDispatch();
+
     const createCollection = async () => {
         setloading(true);
         const req = await fetch(`http://localhost:3000/api/collection/create`, {
@@ -27,6 +29,7 @@ export default function CreateCollection({ recipeId, show, changeShowEvent, succ
         })
         const res = await req.json();
         setloading(false)
+        dispatch(mergeCollections([res]));
         successFetchColl(res);
 
     }
@@ -37,7 +40,9 @@ export default function CreateCollection({ recipeId, show, changeShowEvent, succ
                 <div className="text-3xl absolute top-4 left-4">
                     <BsX onClick={changeShowEvent} className="cursor-pointer" />
                 </div>
-                <TextField id='collection_name' large placeholder="Create Collection" />
+                <div className="w-full px-10">
+                    <TextField id='collection_name' large placeholder="Create Collection" />
+                </div>
                 <Button loading={loading} onClick={() => createCollection()}>
                     Create
                 </Button>
