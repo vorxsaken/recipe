@@ -11,16 +11,33 @@ import Skeletons from "../Skeletons";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { fetcher } from "@/utils";
+import Button from "../Button";
+import { useState } from 'react'
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
-    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher, {revalidateOnFocus: false});
-    const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher, {revalidateOnFocus: false});
+    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
+    const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
     const { data: session } = useSession();
     const userId = useSelector((state: any) => state.user.userInfo.id);
+    const [loadingDelete, setloadingDelete] = useState(false)
 
     const getrating = () => {
         const ratingValue = recipe.ratings.length > 0 ? recipe.ratings.filter((rating: any) => rating.recipeId === recipeID || rating.ownerId === userId)[0] : 0;
         return ratingValue;
+    }
+
+    const editRecipe = () => {
+        window.location.href = `/editRecipe/${recipe.id}`
+    }
+
+    const deleteRecipe = () => {
+        setloadingDelete(true)
+        fetch(`http://localhost:3000/api/recipe/delete/${recipe.id}`)
+            .then(() => {
+                setloadingDelete(false);
+                window.history.back();
+            })
+            .catch(error => console.log(error));
     }
 
     const sendRating = async (value: number) => {
@@ -78,6 +95,18 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
                 </div>
                 <RecipeIngredient ingredients={recipe.ingredients} />
                 <RecipeInstructions instructions={recipe.instructions} />
+                {
+                    recipe.owner.id === userId && (
+                        <div className="w-full flex justify-center items-center gap-2 mt-6">
+                            <Button small text onClick={editRecipe}>
+                                Edit
+                            </Button>
+                            <Button small text loading={loadingDelete} onClick={deleteRecipe}>
+                                Delete
+                            </Button>
+                        </div>
+                    )
+                }
             </div>
         </div>
     )
