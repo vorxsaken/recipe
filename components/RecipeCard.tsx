@@ -3,9 +3,8 @@ import { BiTime } from 'react-icons/bi';
 import { AiFillFolderAdd, AiFillStar } from 'react-icons/ai'
 import { GiSpoon } from 'react-icons/gi'
 import Link from 'next/link';
-import Burger from '../assets/images/burger.jpg';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 interface recipeCard {
   recipeId: string,
@@ -15,14 +14,29 @@ interface recipeCard {
   serving?: string,
   link: string,
   shallow?: boolean,
+  ratings?: {
+    id: string,
+    value: number,
+  }[],
+  collection?: {
+    id: string,
+    name: string
+  }[],
   asLink?: boolean,
   likeEvent?: () => void
 }
 
-export default function RecipeCard({ recipeId, image, title, calorie, serving, link, likeEvent, shallow, asLink }: recipeCard) {
+export default function RecipeCard({ recipeId, image, title, calorie, serving, link, likeEvent, shallow, asLink, ratings, collection }: recipeCard) {
   const collections = useSelector((state: any) => state.user.collections);
   const [isSaved, setisSaved] = useState(false);
   const isAs = asLink ? `/recipe/${recipeId}` : link;
+  const rating = useMemo(() => {
+    const calcRating = ratings?.reduce((init: any, rating: any) => {
+      return init + rating.value
+    }, 0) as any
+
+    return (calcRating / (ratings?.length || 1))
+  }, [ratings])
 
   useEffect(() => {
     if (collections) {
@@ -39,7 +53,7 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
   return (
     <div className='w-44 h-48 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
     overflow-hidden rounded-lg cursor-pointer relative group'>
-      <Link scroll={false} shallow={shallow} href={link} as={isAs}  className='w-full h-48 md:h-56 absolute top-0 z-10' />
+      <Link scroll={false} shallow={shallow} href={link} as={isAs} className='w-full h-48 md:h-56 absolute top-0 z-10' />
       <div className={`w-auto absolute top-2 right-3 bg-gradient-to-b to-black z-10 flex justify-end 
       invisible group-hover:visible rounded-md p-1 ${isSaved ? 'bg-red-50' : 'bg-white'}`}>
         <AiFillFolderAdd onClick={() => { console.log('like') }} className={`text-2xl cursor-pointer ${isSaved ? 'text-red-500' : 'text-slate-500'}`} />
@@ -56,11 +70,11 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <AiFillFolderAdd className='text-red-400' />
-            <span>10</span>
+            <span>{collection?.length}</span>
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <AiFillStar className='text-red-400' />
-            <span>3</span>
+            <span>{rating}</span>
           </div>
         </div>
       </div>
