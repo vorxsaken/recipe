@@ -38,8 +38,6 @@ export default function TextField(props: textField) {
             event.target.value = newValue;
         }
     }
-
-    // const textFieldWidth = small ? 'w-20' : medium ? 'w-56' : large ? 'w-80' : 'w-full';
     const Placeholder = bigPlaceholder ? 'placeholder:font-bold text-2xl font-black' : 'placeholder:text-slate-500 text-sm';
     const textFieldHeight = small ? 'h-8' : medium ? 'h-11' : large ? 'h-12' : 'h-8';
     const textFieldRounded = small ? 'rounded-md' : medium ? 'rounded-md' : large ? 'rounded-lg' : 'rounded-md';
@@ -61,7 +59,7 @@ export default function TextField(props: textField) {
                         <textarea
                             id={id}
                             onInput={handleInput}
-                            className={`w-full ${!autoGrow && 'h-[80px]'} resize-none px-2 py-2 outline-none text-slate-700
+                            className={`w-full ${!autoGrow ? 'h-[70px]' : 'resize-none'} px-2 py-2 outline-none text-slate-700
                             scrollbar-hide transition-all duration-700 ease-in-out ${Placeholder} ${textfieldBorder} ${className}`}
                             placeholder={placeholder}
                             defaultValue={initValue || ''}
@@ -80,7 +78,6 @@ export default function TextField(props: textField) {
                         <input id={id} type='text' placeholder={placeholder} className={`
                         w-full ${textFieldHeight} ${textFieldRounded} ${textFieldIcon} ${textfieldBorder}
                         outline-none pr-4 text-xs placeholder:text-slate-800`}
-                            onInput={handleInput}
                             {...props}
                         />
                     </>
