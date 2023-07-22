@@ -111,13 +111,15 @@ model Recipe {
   calorie       String?
   instructions  String[]
   categories    String[]
-  bigImage     String?
-  smallImage   String?
-  created_at   Int
+  bigImage      String?
+  smallImage    String?
+  created_at    Int
+  servingTime   Int
+  servingTotal  Int
   ingredients   Ingredient[]
   comments      Comment[]
   ratings       Rating[]
-  owner         User?         @relation(fields: [ownerId], references: [id])
+  owner         User?         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId       String?       @db.ObjectId
   collections   Collection[]  @relation(fields: [collectionId], references: [id])
   collectionId  String[]      @db.ObjectId
@@ -130,7 +132,7 @@ model Ingredient {
   name      String
   quantity  String
   unit      String
-  recipe    Recipe  @relation(fields: [recipeId], references: [id])
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId  String  @db.ObjectId
   @@map("ingredients")
 }
@@ -139,9 +141,9 @@ model Comment {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
   author        String
   text          String
-  recipe        Recipe  @relation(fields: [recipeId], references: [id])
+  recipe        Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId      String  @db.ObjectId
-  owner         User    @relation(fields: [ownerId], references: [id])
+  owner         User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId       String  @db.ObjectId
   reply         ReplyComment[]
   created_at    Int
@@ -153,9 +155,9 @@ model ReplyComment {
   author      String
   inquired    String
   text        String
-  comment     Comment @relation(fields: [commentId], references: [id])
+  comment     Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId   String  @db.ObjectId
-  owner       User    @relation(fields: [ownerId], references: [id])
+  owner       User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     String  @db.ObjectId
   created_at  Int
   @@map("replyComments")
@@ -165,9 +167,9 @@ model Rating {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   value     Int
   author    String
-  recipe    Recipe  @relation(fields: [recipeId], references: [id])
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   recipeId  String  @db.ObjectId
-  owner     User    @relation(fields: [ownerId], references: [id])
+  owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId   String  @db.ObjectId
   @@map("ratings")
 }
