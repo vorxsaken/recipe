@@ -1,33 +1,87 @@
 import Layout from "@/components/Layout"
 import PileButton from "@/components/PileButton"
 import RecipeCard from "@/components/RecipeCard"
-import store from "../store/index"
-import { getInitialRecipe, selectAllRecentRecipe } from '../store/Reducers/recipeReducer'
-import { useState, useEffect, useRef } from 'react'
-import Lottie from 'lottie-react';
-import loading from '../assets/newScene.json'
+import { useState } from 'react'
 import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
+import Observer from "@/components/Observer"
+import { useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
+import { addMultiple, selectAll, emptyRecipe } from "@/store/Reducers/recipeReducer"
 
 export default function Home() {
-    const [recents, setRecents] = useState<any[]>([])
-    const pileButt = ['Recent', 'Following'];
-    const pileButtUrl = ['/home', '/home/following']
-    const lotRef = useRef(null);
+    const dispatch = useDispatch();
+    const [showLoad, setShowLoad] = useState(true);
+    const [selected, setSelected] = useState('');
+    const userId = useSelector((state: any) => state.user.userInfo.id);
+    const SKIP_PAGE = useSelector((state: any) => state.user.recipeSkip);
+    const CHECK_END_OF_PAGE = useSelector((state: any) => state.recipe.endPage);
+    const recipes = useSelector(state => selectAll(state));
 
-    useEffect(() => {
-        const loadRef = lotRef.current as any;
-        loadRef.setSpeed(2.5);
-        
-        const getRecipe = async () => {
-            await store.dispatch(getInitialRecipe());
-            const recipes = selectAllRecentRecipe.selectAll(store.getState()) as any
-            setRecents(recipes)
-        }
+    const fetchRecipe = () => {
+        fetch(`/api/recipe/read/${selected === 'Following' ? 'following' : ''}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                skip: SKIP_PAGE,
+                id: userId
+            })
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.length < CHECK_END_OF_PAGE) setShowLoad(false);
+                dispatch(addMultiple(json));
+            })
+            .catch(error => console.log(error))
+    }
 
-        return () => {
-            getRecipe()
-        }
-    }, [])
+    const changeSelected = (sel: any) => {
+        setShowLoad(true);
+        dispatch(emptyRecipe());
+        setSelected(sel);
+    }
+
+    const Recipes = recipes.length > 0 && (
+        <>
+            {
+                recipes.map((recipe: any) => (
+                    <RecipeCard
+                        recipeId={recipe.id}
+                        key={recipe.id}
+                        image={recipe.smallImage}
+                        title={recipe.title}
+                        calorie={recipe.calorie}
+                        ratings={recipe.ratings}
+                        collection={recipe.collections}
+                        asLink
+                        link={`/?recipeDetails=${recipe.id}`}
+                    />
+                ))
+            }
+        </>
+    )
+
+    const loading = showLoad ? (
+        <>
+            <Observer trigger={() => fetchRecipe()} />
+        </>
+    ) : recipes.length === 0 ? (
+        <div className="w-full h-[200px] flex flex-col justify-center items-center">
+            <span className="text-2xl font-bold">
+                No Recipes
+            </span>
+            <span className="text-sm font-thin text-gray-500">
+                Think Of Following Some Other Users ?
+            </span>
+        </div>
+    ) : (
+        <div className="w-full h-[200px] flex flex-col justify-center items-center">
+            <span className="text-2xl font-bold">
+                End Of Page
+            </span>
+            <span className="text-sm font-thin text-gray-500">
+                Yo.. You have Some Problem With Your Taste ?
+            </span>
+        </div>
+    )
 
     return (
         <div>
@@ -35,27 +89,14 @@ export default function Home() {
             <Layout>
                 <div className={`min-h-[700px] flex flex-col justify-start items-center gap-8 py-10 overflow-hidden`}>
                     <div className="w-full flex justify-center items-center mt-10 md:mt-0">
-                        <PileButton buttons={pileButt} select={pileButt[0]} url={pileButtUrl} />
+                        <PileButton value={changeSelected} defaultValue="Recent">
+                            <span>Recent</span>
+                            <span>Following</span>
+                        </PileButton>
                     </div>
                     <div className="w-full flex justify-center md:justify-start items-start gap-2 md:gap-4 md:pl-10 flex-wrap">
-                        {
-                            recents.length > 0  ?
-                                recents.map((recent: any) => (
-                                    <RecipeCard
-                                        recipeId={recent.id}
-                                        key={recent.id}
-                                        image={recent.smallImage}
-                                        title={recent.title}
-                                        calorie={recent.calorie}
-                                        asLink
-                                        link={`/?recipeDetails=${recent.id}`}
-                                    />
-                                )) : (
-                                    <div className="w-full py-8 flex justify-center items-center">
-                                        <Lottie className="w-52" animationData={loading} lottieRef={lotRef} />
-                                    </div>
-                                )
-                        }
+                        {Recipes}
+                        {loading}
                     </div>
                 </div>
             </Layout>
