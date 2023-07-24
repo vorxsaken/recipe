@@ -2,7 +2,7 @@ import Lottie from 'lottie-react';
 import { useEffect, useRef, useState } from 'react';
 import LoadingAnimation from '../assets/92025-loading.json'
 
-export default function Observer({trigger}: {trigger: () => void}) {
+export default function Observer({trigger, small}: {trigger: () => void, small?: boolean}) {
     const [isIntersecting, setIsIntersection] = useState(false);
     const ref = useRef(null);
 
@@ -26,7 +26,7 @@ export default function Observer({trigger}: {trigger: () => void}) {
 
     return (
         <div ref={ref} className="w-full flex justify-center items-center mt-6">
-            <Lottie className="w-36" animationData={LoadingAnimation} />
+            <Lottie className={small ? 'w-20' : 'w-36'} animationData={LoadingAnimation} />
         </div>
     )
 }
