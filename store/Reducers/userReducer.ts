@@ -10,9 +10,11 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
         userInfo: {
-            id: ''
+            id: '',
+            following: []
         },
         collections: [],
+        tempCollection: null,
         recipes: [],
         recipeSkip: 0,
         isUserInfoFetched: false
@@ -25,8 +27,20 @@ const userSlice = createSlice({
             state.recipes = state.recipes.concat(actions.payload);
             state.recipeSkip += 10;
         },
+        setFollowing(state, actions) {
+            state.userInfo.following = actions.payload
+        },
+        setTempCollection(state, actions) {
+            state.tempCollection = actions.payload;
+        },
+        resetTempCollection(state, actions){
+            state.tempCollection = null;
+        },
         resetCollection(state, actions) {
             state.collections = actions.payload.collections;
+        },
+        mergeCollections(state, actions) {
+            state.collections = state.collections.concat(actions.payload);
         }
     },
     extraReducers(builder) {
@@ -38,5 +52,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { resetCollection, mergeRecipes, setUser } = userSlice.actions;
+export const { resetCollection, mergeRecipes, setUser, setTempCollection, resetTempCollection, mergeCollections, setFollowing } = userSlice.actions;
 export default userSlice.reducer
