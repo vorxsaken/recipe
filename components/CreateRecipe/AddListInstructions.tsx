@@ -55,8 +55,8 @@ const AddListInstructions = forwardRef((props: instrucUI, ref) => {
 
     return (
         <div className='w-full flex flex-col gap-8 relative'>
-            <div className='absolute -top-10 -right-10 flex flex-col justify-center items-center gap-3 rounded-xl border border-slate-400
-        text-slate-900 text-xl px-1 py-2 z-10'>
+            <div className='absolute -top-16 md:-top-10 -right-0 md:-right-10 flex flex-row md:flex-col justify-center items-center md:gap-3 gap-4 
+            rounded-xl border border-slate-400 text-slate-900 md:text-xl text-3xl md:px-1 md:py-2 px-2 py-2 z-10'>
                 <BsPlusCircle onClick={addTextField} className='hover:text-slate-600 cursor-pointer' />
                 <BsTrash onClick={deleteTextField} className='hover:text-slate-600 cursor-pointer' />
             </div>
