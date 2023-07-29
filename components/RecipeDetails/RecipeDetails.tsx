@@ -12,17 +12,32 @@ import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { fetcher } from "@/utils";
 import Button from "../Button";
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import Router from "next/router";
+import { useDispatch } from "react-redux";
+import { removeRecipe } from "@/store/Reducers/recipeReducer";
+import { useMediaQuery } from "@/utils";
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
+    const dispatch = useDispatch();
     const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
     const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
     const { data: session } = useSession();
     const userId = useSelector((state: any) => state.user.userInfo.id);
-    const [loadingDelete, setloadingDelete] = useState(false)
+    const [loadingDelete, setloadingDelete] = useState(false);
+    const isSmall = useMediaQuery('(max-width: 600px)');
+    const isMedium = useMediaQuery('(min-width: 600px)');
+
+    const ratingCalc = (ratings: any) => {
+        const calcRating = ratings?.reduce((init: any, rating: any) => {
+            return init + rating.value
+        }, 0) as any
+
+        return (calcRating / (ratings?.length || 1)).toString()
+    }
 
     const getrating = () => {
-        const ratingValue = recipe.ratings.length > 0 ? recipe.ratings.filter((rating: any) => rating.recipeId === recipeID || rating.ownerId === userId)[0] : 0;
+        const ratingValue = recipe?.ratings?.length > 0 ? recipe.ratings.filter((rating: any) => rating.recipeId === recipeID || rating.ownerId === userId)[0] : 0;
         return ratingValue;
     }
 
@@ -35,7 +50,8 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
         fetch(`http://localhost:3000/api/recipe/delete/${recipe.id}`)
             .then(() => {
                 setloadingDelete(false);
-                window.history.back();
+                dispatch(removeRecipe(recipe.id))
+                Router.back();
             })
             .catch(error => console.log(error));
     }
@@ -50,19 +66,30 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
                 recipeId: recipeID,
                 ratingId: getrating().id
             })
-        }).then(res => res.json()).then(json => console.log(json)).catch((error) => console.log(error))
+        })
+            .then(() => {
+                window.history.back();
+                window.location.reload();
+            })
+            .catch((error) => console.log(error))
     }
+
+    const commentsComponent =
+        <>
+            <GiveComments id={recipeID} author={session?.user?.name as string} ownerId={userId} />
+            <Comments comments={comments} author={session?.user?.name as string} userId={userId} />
+        </>
 
     if (!recipe) {
         return (
-            <div className='w-full flex justify-center items-start gap-8 pt-4 pb-14'>
-                <div className="w-[600px] flex flex-col justify-center items-center gap-8">
+            <div className='w-full flex flex-col md:flex-row justify-center items-center md:items-start gap-8 pt-4 pb-14 px-4'>
+                <div className="w-full md:w-[600px] flex flex-col justify-center items-center gap-8">
                     <div className='w-full h-96 overflow-hidden rounded-md relative flex justify-center items-center'>
                         <Skeletons type="image" />
                     </div>
                     <Skeletons type="text input" count={2} />
                 </div>
-                <div className="w-[600px] flex flex-col gap-6 justify-start items-start">
+                <div className="w-full md:w-[600px] flex flex-col gap-6 justify-start items-start">
                     <div className="w-full flex flex-col gap-3">
                         <Skeletons type="title" />
                         <Skeletons type="subtitle" count={2} />
@@ -76,27 +103,31 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     }
 
     return (
-        <div className='w-full flex justify-center items-start gap-8 pt-4 pb-14'>
-            <div className="w-[600px] flex flex-col justify-center items-center gap-8">
+        <div className='w-full flex flex-col md:flex-row justify-center items-center md:items-start gap-8 md:pt-4 pt-0 pb-0 md:pb-14 px-4'>
+            <div className="w-full md:w-[600px] flex flex-col justify-center items-center gap-8">
                 <div className='w-full h-96 overflow-hidden rounded-md relative bg-gray-200'>
-                    <Image src={recipe.bigImage} alt='burger' fill className="pointer-events-none object-cover" />
+                    <Image src={recipe?.bigImage} alt='burger' fill className="pointer-events-none object-cover" />
                 </div>
-                <GiveComments id={recipeID} author={session?.user?.name as string} ownerId={userId} />
-                <Comments comments={comments} author={session?.user?.name as string} userId={userId} />
+                {isMedium && commentsComponent}
             </div>
-            <div className="w-[600px] flex flex-col gap-6 justify-start items-start">
+            <div className="w-full md:w-[600px] flex flex-col gap-6 justify-start items-start">
                 <div className="w-full flex flex-col gap-3">
-                    <TitleRecipe owner={recipe.owner.name} ownerId={recipe.owner.id} recipeId={recipe.id} title={recipe.title} />
-                    <StarRating value={getrating().value} starAction={value => sendRating(value)} />
-                    <RecipeInfo calorie={recipe.calorie} />
+                    <TitleRecipe owner={recipe?.owner?.name || ''} ownerId={recipe?.owner?.id || ''} recipeId={recipe?.id} title={recipe?.title} />
+                    <StarRating value={getrating()?.value} starAction={value => sendRating(value)} />
+                    <RecipeInfo
+                        calorie={recipe?.calorie}
+                        servingTime={recipe?.servingTime}
+                        servingTotal={recipe?.servingTotal}
+                        rating={ratingCalc(recipe?.ratings)}
+                    />
                     <div className="text-slate-600 text-sm bg-slate-50 rounded-lg p-2">
-                        {recipe.description}
+                        {recipe?.description}
                     </div>
                 </div>
-                <RecipeIngredient ingredients={recipe.ingredients} />
-                <RecipeInstructions instructions={recipe.instructions} />
+                <RecipeIngredient ingredients={recipe?.ingredients || ''} />
+                <RecipeInstructions instructions={recipe?.instructions || ''} />
                 {
-                    recipe.owner.id === userId && (
+                    recipe?.owner?.id === userId && (
                         <div className="w-full flex justify-center items-center gap-2 mt-6">
                             <Button small text onClick={editRecipe}>
                                 Edit
@@ -107,6 +138,7 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
                         </div>
                     )
                 }
+                {isSmall && commentsComponent}
             </div>
         </div>
     )
