@@ -14,8 +14,8 @@ export default function Collections(props: {kollection: any}) {
   }
 
   return (
-    <div onClick={ToCollection} className='flex flex-col gap-1 cursor-pointer' {...props}>
-      <div className='w-[380px] h-60 flex justify-start items-start rounded-2xl overflow-hidden gap-1'>
+    <div onClick={ToCollection} className='flex flex-col md:gap-1 gap-3 cursor-pointer' {...props}>
+      <div className='w-80 sm:w-96 md:w-[380px] h-60 flex justify-start items-start rounded-2xl overflow-hidden gap-1'>
         <div className='w-[70%] h-full overflow-hidden relative bg-gray-200'>
           {
             kollection.recipes[0]?.bigImage && (
@@ -47,7 +47,7 @@ export default function Collections(props: {kollection: any}) {
           </div>
         </div>
       </div>
-      <div className='text-xl font-semibold'>
+      <div className='md:text-xl text-3xl font-semibold text-center'>
         {kollection.name}
       </div>
     </div>
