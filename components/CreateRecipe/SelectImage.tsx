@@ -55,7 +55,7 @@ export default function SelectImage({ onChange, value, sm, circleRounded }: Sele
         onChange(compressedImage)
     }
 
-    const containerSize = sm ? 'w-[220px] h-[220px]' : 'w-[500px] h-[450px]';
+    const containerSize = sm ? 'w-60 md:w-[220px] h-60 md:h-[220px]' : 'w-full md:w-[500px] h-96 md:h-[450px]';
     const borderRadius = circleRounded ? 'rounded-full' : 'rounded-xl';
 
     return (
