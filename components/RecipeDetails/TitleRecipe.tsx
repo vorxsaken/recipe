@@ -42,7 +42,7 @@ export default function TitleRecipe({ recipeId, title, owner, ownerId }: { recip
     return (
         <div className="w-full flex justify-center items-start">
             <div className='w-full flex flex-col justify-start items-start gap-2'>
-                <span className={`text-4xl font-bold text-slate-800 ${lobster.className}`}>
+                <span className={`text-xl md:text-4xl font-bold text-slate-800 ${lobster.className}`}>
                     {title}
                 </span>
                 <span className='text-xs ml-1 text-slate-700'>
