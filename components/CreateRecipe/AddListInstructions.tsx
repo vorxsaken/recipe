@@ -1,7 +1,6 @@
 import { useState, createElement, forwardRef, useImperativeHandle, useEffect } from 'react'
 import TextField from '../TextField'
 import { BsPlusCircle, BsTrash } from 'react-icons/bs'
-import Button from '../Button'
 
 interface instrucUI { setInstructions: (e: any) => void, values?: string[] }
 
