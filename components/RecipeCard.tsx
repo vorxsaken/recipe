@@ -9,7 +9,7 @@ import { useEffect, useState, useMemo } from 'react';
 interface recipeCard {
   recipeId: string,
   image?: StaticImageData,
-  title?: string,
+  title: string,
   calorie?: string,
   serving?: string,
   link: string,
@@ -30,6 +30,7 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
   const collections = useSelector((state: any) => state.user.collections);
   const [isSaved, setisSaved] = useState(false);
   const isAs = asLink ? `/recipe/${recipeId}` : link;
+  const shortTitle = title?.length > 50 ? title?.substring(0, 50) + ' ...' : title;
   const rating = useMemo(() => {
     const calcRating = ratings?.reduce((init: any, rating: any) => {
       return init + rating.value
@@ -51,18 +52,18 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
   }, [collections])
 
   return (
-    <div className='w-44 h-48 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
+    <div title={title} className='w-full h-72 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
     overflow-hidden rounded-lg cursor-pointer relative group'>
       <Link scroll={false} shallow={shallow} href={link} as={isAs} className='w-full h-48 md:h-56 absolute top-0 z-10' />
       <div className={`w-auto absolute top-2 right-3 bg-gradient-to-b to-black z-10 flex justify-end 
       invisible group-hover:visible rounded-md p-1 ${isSaved ? 'bg-red-50' : 'bg-white'}`}>
         <AiFillFolderAdd onClick={() => { console.log('like') }} className={`text-2xl cursor-pointer ${isSaved ? 'text-red-500' : 'text-slate-500'}`} />
       </div>
-      <div className='w-full h-36 md:h-48 bg-blue-200 overflow-hidden relative'>
+      <div className='w-full h-48 md:h-48 bg-blue-200 overflow-hidden relative'>
         <Image src={image || ''} alt='burger' fill className='object-cover pointer-events-none' />
       </div>
-      <div className='w-full flex flex-col text-md md:text-lg pl-2 md:pl-4 text-slate-700 font-semibold'>
-        <span>{title}</span>
+      <div className='w-full flex flex-col gap-2 text-lg md:text-sm pl-2 md:pl-4 text-slate-700 font-semibold'>
+        <span>{shortTitle}</span>
         <div className='flex flex-row gap-2'>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <GiSpoon className='text-red-400' />
@@ -74,7 +75,7 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
           </div>
           <div className='text-xs text-slate-400 font-thin flex flex-row gap-2'>
             <AiFillStar className='text-red-400' />
-            <span>{rating}</span>
+            <span>{isNaN(rating) ? 0 : rating}</span>
           </div>
         </div>
       </div>
