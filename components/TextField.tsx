@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, forwardRef, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 interface textField {
     id?: any,
@@ -42,13 +42,13 @@ export default function TextField(props: textField) {
     const textFieldHeight = small ? 'h-8' : medium ? 'h-11' : large ? 'h-12' : 'h-8';
     const textFieldRounded = small ? 'rounded-md' : medium ? 'rounded-md' : large ? 'rounded-lg' : 'rounded-md';
     const textFieldIcon = icon ? 'pl-9' : 'pl-4';
-    const textfieldBorder = borderLess ? 'border-none' : textArea ? 'border-b border-slate-500' : 'border border-slate-800';
+    const textfieldBorder = borderLess ? 'border-none' : textArea ? 'border-b border-slate-500' : 'border border-slate-600';
 
     return (
-        <>
+        <span className='w-full relative'>
             {
                 icon && (
-                    <span className="text-md text-slate-800 absolute top-[28%] left-3">
+                    <span className="text-md text-slate-500 absolute top-[31%] left-3">
                         {icon}
                     </span>
                 )
@@ -59,7 +59,7 @@ export default function TextField(props: textField) {
                         <textarea
                             id={id}
                             onInput={handleInput}
-                            className={`w-full ${!autoGrow ? 'h-[70px]' : 'resize-none'} px-2 py-2 outline-none text-slate-700
+                            className={`w-full ${!autoGrow ? 'h-[100px]' : 'resize-none'} px-2 py-2 outline-none text-slate-700
                             scrollbar-hide transition-all duration-700 ease-in-out ${Placeholder} ${textfieldBorder} ${className}`}
                             placeholder={placeholder}
                             defaultValue={initValue || ''}
@@ -75,14 +75,14 @@ export default function TextField(props: textField) {
                     </div>
                 ) : (
                     <>
-                        <input id={id} type='text' placeholder={placeholder} className={`
+                        <input id={id} onInput={handleInput} type='text' placeholder={placeholder} className={`
                         w-full ${textFieldHeight} ${textFieldRounded} ${textFieldIcon} ${textfieldBorder}
-                        outline-none pr-4 text-xs placeholder:text-slate-800`}
+                        outline-none pr-4 text-xs placeholder:text-slate-500`}
                             {...props}
                         />
                     </>
                 )
             }
-        </>
+        </span>
     )
 }
