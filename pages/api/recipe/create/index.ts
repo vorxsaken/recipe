@@ -4,12 +4,25 @@ import { authOptions } from '../../auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { title, smallImage, categories, bigImage, description, calorie, instructions, ingredients } = JSON.parse(req.body);
+    const { 
+        title, 
+        smallImage, 
+        categories, 
+        bigImage, 
+        description, 
+        calorie, instructions, 
+        ingredients,
+        servingTime,
+        servingTotal
+    } = JSON.parse(req.body);
+
     const session = await getServerSession(req, res, authOptions);
+    const FIELD_VALIDATION = !title || !smallImage || !categories || !bigImage || !description || !calorie || !servingTime 
+    || !servingTotal || instructions.length == 0 || ingredients.length == 0
 
     if(session) {
         try {
-            if(!title || !smallImage || !categories || !bigImage || !description || !calorie || instructions.length == 0 || ingredients.length == 0) {
+            if(FIELD_VALIDATION) {
                 return res.status(417).send('some field empty'); 
             }
 
@@ -33,7 +46,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     created_at: Date.now(),
                     ingredients: {
                         create: ingredients
-                    }
+                    },
+                    servingTime: parseInt(servingTime),
+                    servingTotal: parseInt(servingTotal)
                 },
                 include: {
                     ingredients: true
