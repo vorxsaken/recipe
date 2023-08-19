@@ -8,9 +8,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const getRecipe = await database.recipe.findMany({
                 skip: skip,
-                take: 3,
+                take: 10,
                 orderBy: {
                     created_at: 'desc'
+                },
+                include: {
+                    ratings: {
+                        select: {
+                            id: true,
+                            value: true
+                        }
+                    },
+                    collections: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
                 }
 
             }).catch(err => { throw new Error(err) });
