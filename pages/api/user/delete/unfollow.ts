@@ -29,9 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 }
             }
-        })
+        }).catch(error => { throw new Error(error )})
 
-        res.status(200).send({ message: 'success' })
+        res.status(200).send({ message: 'success unfollow' })
         
     } catch (error) {
         res.status(500).send(error)
