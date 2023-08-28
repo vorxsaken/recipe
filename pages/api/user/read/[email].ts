@@ -10,7 +10,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 email: email as string
             },
             include: {
-                collections: true
+                collections: true,
+                follower: {
+                    select: {
+                        userFollow: {
+                            select: {
+                                user: true
+                            }
+                        }
+                    }
+                },
+                following: {
+                    select: {
+                        userFollow: {
+                            select: {
+                                user: true
+                            }
+                        }
+                    }
+                }
             }
         })
 
