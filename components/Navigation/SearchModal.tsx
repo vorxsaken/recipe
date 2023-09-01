@@ -17,7 +17,7 @@ function SearchModal({ showModal, openSearch }: { showModal: boolean, openSearch
         const text = (document.getElementById('search') as any).value;
         if (text) {
             setLoading(true)
-            const req = await fetch(`http://localhost:3000/api/user/read/search/${text}`);
+            const req = await fetch(`/api/user/read/search/${text}`);
             const res = await req.json();
             setUsers(res);
             if (res.length < 1) setMessage('empty result');
