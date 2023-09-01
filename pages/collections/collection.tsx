@@ -59,7 +59,7 @@ export default function Collection() {
                         <span className="text-sm font-bold">
                             Collection Name
                         </span>
-                        <TextField id='collection-name' defaultValue={collections.name} placeholder="enter new collection name ..." medium />
+                        <TextField id='collection-name' defaultValue={collections?.name || ''} placeholder="enter new collection name ..." medium />
                     </div>
                     <Button small loading={loadingEdit} onClick={editCollection}>
                         Update
