@@ -50,7 +50,7 @@ function Collection({ id, image, name, recipes, recipeId, reFetch }: CollectionU
     const changeState = () => {
         if(userId) {
             setselected(selected ? false : true);
-            fetch(`http://localhost:3000/api/collection/update/${selected ? 'disconnect' : 'connect'}`, {
+            fetch(`/api/collection/update/${selected ? 'disconnect' : 'connect'}`, {
                 method: 'POST',
                 body: JSON.stringify({
                     collectionId: id,
@@ -60,7 +60,7 @@ function Collection({ id, image, name, recipes, recipeId, reFetch }: CollectionU
                 .then(res => res.json())
                 .then(async (json) => {
                     reFetch(json);
-                    const getCollection = await fetcher(`http://localhost:3000/api/user/read/${userEmail}`);
+                    const getCollection = await fetcher(`/api/user/read/${userEmail}`);
                     dispatch(resetCollection(getCollection));
                 })
                 .catch(error => console.log(error))
@@ -107,7 +107,7 @@ export default function SaveRecipe({ recipeId, show, createEvent, closeEvent, ne
     const id = useSelector((state: any) => state.user.userInfo.id);
 
     const getCollections = async () => {
-        const res = await fetcher(`http://localhost:3000/api/collection/read/${id}`);
+        const res = await fetcher(`/api/collection/read/${id}`);
         setcollections(res);
     }
 

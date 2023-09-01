@@ -51,7 +51,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
         };
 
         const imageUrl = Object.keys(image).length > 0 ? await uploadImages(image.smallImage, image.bigImage) as any : {};
-        fetch('http://localhost:3000/api/recipe/update', {
+        fetch('/api/recipe/update', {
             method: 'POST',
             body: JSON.stringify({
                 id: recipe.id,
@@ -135,7 +135,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
 export const getServerSideProps = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query;
 
-    const getrecipe = await fetch(`http://localhost:3000/api/recipe/read/details/${id}`);
+    const getrecipe = await fetch(`/api/recipe/read/details/${id}`);
     const recipe = await getrecipe.json();
 
     return {

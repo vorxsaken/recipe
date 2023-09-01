@@ -54,7 +54,7 @@ export default function CreateRecipe() {
         };
 
         const imageUrl = await uploadImages(image.smallImage, image.bigImage) as any;
-        fetch('http://localhost:3000/api/recipe/create', {
+        fetch('/api/recipe/create', {
             method: 'POST',
             body: JSON.stringify({
                 title: TitleTextField.value,

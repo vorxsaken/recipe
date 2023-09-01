@@ -20,7 +20,7 @@ export default function CreateCollection({ recipeId, show, changeShowEvent, succ
     const createCollection = async () => {
         if(userId) {
             setloading(true);
-            const req = await fetch(`http://localhost:3000/api/collection/create`, {
+            const req = await fetch(`/api/collection/create`, {
                 method: 'POST',
                 body: JSON.stringify({
                     recipeId: recipeId,

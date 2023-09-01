@@ -27,7 +27,7 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
 
             if (comment) {
                 setLoading(true);
-                await fetch(`http://localhost:3000/api/recipe/create/${reply ? 'reply' : 'comment'}`, {
+                await fetch(`/api/recipe/create/${reply ? 'reply' : 'comment'}`, {
                     method: 'POST',
                     body: JSON.stringify({
                         recipeId: id,

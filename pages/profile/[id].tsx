@@ -187,7 +187,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     }
 
     const fetchRecipes = async () => {
-        fetch('http://localhost:3000/api/user/read/recipe', {
+        fetch('/api/user/read/recipe', {
             method: 'POST',
             body: JSON.stringify({
                 skip: skip,
@@ -205,7 +205,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     const unfollow = (unfollow: boolean) => {
         if (userId) {
             setfollowLoading(true)
-            fetch(`http://localhost:3000/api/user/${unfollow ? 'delete/unfollow' : 'create/follow'}`, {
+            fetch(`/api/user/${unfollow ? 'delete/unfollow' : 'create/follow'}`, {
                 method: 'POST',
                 body: JSON.stringify({
                     userId: userId,

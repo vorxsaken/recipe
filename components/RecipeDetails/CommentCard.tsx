@@ -38,7 +38,7 @@ export default function CommentCard({ commentId, comment, image, author, inquire
 
     const deletePost = () => {
         setloadingDelete(true);
-        fetch(`http://localhost:3000/api/recipe/delete/comment`, {
+        fetch(`/api/recipe/delete/comment`, {
             method: 'POST',
             body: JSON.stringify({
                 commentId: commentId,

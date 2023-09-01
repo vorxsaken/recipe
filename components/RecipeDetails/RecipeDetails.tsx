@@ -20,8 +20,8 @@ import { useMediaQuery } from "@/utils";
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     const dispatch = useDispatch();
-    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/details/${recipeID || ''}`, fetcher, { revalidateOnFocus: true });
-    const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
+    const { data: recipe } = useSWR(`/api/recipe/read/details/${recipeID || ''}`, fetcher, { revalidateOnFocus: true });
+    const { data: comments } = useSWR(`/api/recipe/read/comment/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
     const { data: session } = useSession();
     const userId = useSelector((state: any) => state.user.userInfo.id);
     const [loadingDelete, setloadingDelete] = useState(false);
@@ -47,7 +47,7 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
 
     const deleteRecipe = () => {
         setloadingDelete(true)
-        fetch(`http://localhost:3000/api/recipe/delete/${recipe.id}`)
+        fetch(`/api/recipe/delete/${recipe.id}`)
             .then(() => {
                 setloadingDelete(false);
                 dispatch(removeRecipe(recipe.id))
@@ -58,7 +58,7 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
 
     const sendRating = async (value: number) => {
         if (userId) {
-            await fetch(`http://localhost:3000/api/recipe/${getrating() != 0 ? 'update' : 'create'}/rating`, {
+            await fetch(`/api/recipe/${getrating() != 0 ? 'update' : 'create'}/rating`, {
                 method: 'POST',
                 body: JSON.stringify({
                     value: value,
