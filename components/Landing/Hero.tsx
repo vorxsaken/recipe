@@ -13,9 +13,9 @@ export default function Hero() {
             For Everyone
           </p>
           <div className="max-w-lg md:max-w-2xl md:text-sm text-xs md:text-slate-800 text-black font-bold">
-          This food recipe website offers a vast collection of culinary creations from around the community, 
+          {`This food recipe website offers a vast collection of culinary creations from around the community, 
           featuring easy-to-follow instructions, mouth-watering photos, and helpful cooking tips. 
-          Whether you're a seasoned chef or a beginner in the kitchen, this site has something for everyone.
+          Whether you're a seasoned chef or a beginner in the kitchen, this site has something for everyone.`}
           </div>
           <Button>Get Started</Button>
         </div>

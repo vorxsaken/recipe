@@ -14,7 +14,7 @@ import Router from "next/router";
 import { categories as opt } from "@/utils"
 import Head from "next/head"
 
-export default function createRecipe() {
+export default function CreateRecipe() {
     const [image, setimage] = useState<imageType>({});
     const [Ingredients, setIngredients] = useState<Object[]>([])
     const [loadingButton, setloadingButton] = useState(false);

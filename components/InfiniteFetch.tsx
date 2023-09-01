@@ -55,6 +55,7 @@ const InfiniteFetch = forwardRef(({
             {loading}
         </>
     )
-})
+});
 
-export default InfiniteFetch
+InfiniteFetch.displayName = 'InfiniteFetch';
+export default InfiniteFetch;

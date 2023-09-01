@@ -82,7 +82,7 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
                         >
                             {
                                 selected.length > 0 ? selected.map(select => (
-                                    <div className='min-w-[100px] px-4 py-2 text-center rounded-3xl bg-slate-200 text-slate-800 text-sm'>
+                                    <div key={select} className='min-w-[100px] px-4 py-2 text-center rounded-3xl bg-slate-200 text-slate-800 text-sm'>
                                         {select}
                                     </div>
                                 )) : (
@@ -94,7 +94,7 @@ export default function SelectField({ placeholder, options, multiple, setSelecti
                             style={{top: yPosition}}
                             >
                                 {options.map(option => (
-                                    <div className="w-full flex justify-start items-center">
+                                    <div key={option} className="w-full flex justify-start items-center">
                                         <input onChange={checkBoxChange} className="peer hidden" type="checkbox" value={option} id={option} />
                                         <label htmlFor={option} className='w-8 h-6 rounded-sm flex justify-center items-center bg-gray-300 
                                         peer-checked:bg-blue-500 '>

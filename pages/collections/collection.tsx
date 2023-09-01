@@ -85,6 +85,7 @@ export default function Collection() {
                         {
                             collections.recipes.map((collection: any) => (
                                 <RecipeCard
+                                    key={collection.id}
                                     title={collection.title}
                                     image={collection.smallImage}
                                     calorie={collection.calorie}

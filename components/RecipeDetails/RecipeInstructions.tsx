@@ -9,7 +9,7 @@ export default function RecipeInstructions({instructions}: {instructions: string
             <ul className="font-thin list-decimal list-outside text-slate-600 pl-8">
                 {
                     instructions.map(instruction => (
-                        <li className="pl-1">{instruction}</li>
+                        <li key={instruction} className="pl-1">{instruction}</li>
                     ))
                 }
             </ul>

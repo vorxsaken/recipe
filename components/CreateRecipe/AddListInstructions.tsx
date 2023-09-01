@@ -60,17 +60,11 @@ const AddListInstructions = forwardRef((props: instrucUI, ref) => {
                 <BsTrash onClick={deleteTextField} className='hover:text-slate-600 cursor-pointer' />
             </div>
             <ul className='list-decimal text-xs flex flex-col gap-4'>
-                {/* {
-                    !values && (
-                        <li>
-                            <TextField id='1' borderLess placeholder='Instruction 1' large />
-                        </li>
-                    )
-                } */}
                 {listIns}
             </ul>
         </div>
     )
 })
+AddListInstructions.displayName = 'AddListInstructions';
 
-export default AddListInstructions
+export default AddListInstructions;

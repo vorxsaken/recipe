@@ -16,7 +16,7 @@ interface imageType {
     [key: string]: Blob,
 }
 
-export default function editRecipe({recipe}: {recipe: any}) {
+export default function EditRecipe({recipe}: {recipe: any}) {
     const [image, setimage] = useState<imageType>({});
     const [Ingredients, setIngredients] = useState<Object[]>([])
     const [loadingButton, setloadingButton] = useState(false);

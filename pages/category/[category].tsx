@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import RecipeDetailsModal from '@/components/RecipeDetails/RecipeDetailsModal'
 
-function category() {
+function Category() {
   const router = useRouter()
   const { category } = router.query;
   const ref = useRef()
@@ -68,4 +68,4 @@ function category() {
   )
 }
 
-export default category
+export default Category
