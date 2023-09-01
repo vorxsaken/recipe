@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
 import { fetcher } from "@/utils";
 import Button from "../Button";
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import Router from "next/router";
 import { useDispatch } from "react-redux";
 import { removeRecipe } from "@/store/Reducers/recipeReducer";
@@ -20,7 +20,7 @@ import { useMediaQuery } from "@/utils";
 
 export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     const dispatch = useDispatch();
-    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
+    const { data: recipe } = useSWR(`http://localhost:3000/api/recipe/read/details/${recipeID || ''}`, fetcher, { revalidateOnFocus: true });
     const { data: comments } = useSWR(`http://localhost:3000/api/recipe/read/comment/${recipeID || ''}`, fetcher, { revalidateOnFocus: false });
     const { data: session } = useSession();
     const userId = useSelector((state: any) => state.user.userInfo.id);
@@ -57,21 +57,23 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
     }
 
     const sendRating = async (value: number) => {
-        await fetch(`http://localhost:3000/api/recipe/${getrating() != 0 ? 'update' : 'create'}/rating`, {
-            method: 'POST',
-            body: JSON.stringify({
-                value: value,
-                author: session?.user?.name,
-                ownerId: userId,
-                recipeId: recipeID,
-                ratingId: getrating().id
+        if (userId) {
+            await fetch(`http://localhost:3000/api/recipe/${getrating() != 0 ? 'update' : 'create'}/rating`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    value: value,
+                    author: session?.user?.name,
+                    ownerId: userId,
+                    recipeId: recipeID,
+                    ratingId: getrating().id
+                })
             })
-        })
-            .then(() => {
-                window.history.back();
-                window.location.reload();
-            })
-            .catch((error) => console.log(error))
+                .then(() => {
+                    // window.history.back();
+                    // window.location.reload();
+                })
+                .catch((error) => console.log(error))
+        }
     }
 
     const commentsComponent =
@@ -113,7 +115,11 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
             <div className="w-full md:w-[600px] flex flex-col gap-6 justify-start items-start">
                 <div className="w-full flex flex-col gap-3">
                     <TitleRecipe owner={recipe?.owner?.name || ''} ownerId={recipe?.owner?.id || ''} recipeId={recipe?.id} title={recipe?.title} />
-                    <StarRating value={getrating()?.value} starAction={value => sendRating(value)} />
+                    {
+                        userId && (
+                            <StarRating value={getrating()?.value} starAction={value => sendRating(value)} />
+                        )
+                    }
                     <RecipeInfo
                         calorie={recipe?.calorie}
                         servingTime={recipe?.servingTime}
@@ -124,8 +130,8 @@ export default function RecipeDetails({ recipeID }: { recipeID: string }) {
                         {recipe?.description}
                     </div>
                 </div>
-                <RecipeIngredient ingredients={recipe?.ingredients || ''} />
-                <RecipeInstructions instructions={recipe?.instructions || ''} />
+                <RecipeIngredient ingredients={recipe?.ingredients || []} />
+                <RecipeInstructions instructions={recipe?.instructions || []} />
                 {
                     recipe?.owner?.id === userId && (
                         <div className="w-full flex justify-center items-center gap-2 mt-6">

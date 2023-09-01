@@ -82,7 +82,7 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
       <div className='w-full px-2 md:px-4 pb-2 flex justify-start items-center text-slate-800'>
         <div className='flex justify-center items-center gap-1'>
           <BiTime className='text-sm md:text-md' />
-          <span className='text-[0.6rem] md:text-[0.7rem]'> 15 min serving</span>
+          <span className='text-[0.6rem] md:text-[0.7rem]'> {serving} min serving</span>
         </div>
       </div>
     </div>

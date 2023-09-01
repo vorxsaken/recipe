@@ -26,7 +26,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
   }, [Router])
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchWhenOffline={false}>
       <Provider store={store}>
         <div className={`${manrope.className}`}>
           <Component {...pageProps} />

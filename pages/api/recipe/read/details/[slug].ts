@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { database } from '../../_base';
+import { database } from '../../../_base';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { slug } = req.query as any;

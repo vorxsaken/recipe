@@ -45,23 +45,26 @@ function Collection({ id, image, name, recipes, recipeId, reFetch }: CollectionU
     const dispatch = useDispatch();
     var isInclude = recipes.some((recipe: any) => recipe.id == recipeId);
     const userEmail = useSelector((state: any) => state.user.userInfo.email);
+    const userId = useSelector((state: any) => state.user.userInfo.id);
 
     const changeState = () => {
-        setselected(selected ? false : true);
-        fetch(`http://localhost:3000/api/collection/update/${selected ? 'disconnect' : 'connect'}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                collectionId: id,
-                recipeId: recipeId
+        if(userId) {
+            setselected(selected ? false : true);
+            fetch(`http://localhost:3000/api/collection/update/${selected ? 'disconnect' : 'connect'}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    collectionId: id,
+                    recipeId: recipeId
+                })
             })
-        })
-            .then(res => res.json())
-            .then(async (json) => {
-                reFetch(json);
-                const getCollection = await fetcher(`http://localhost:3000/api/user/read/${userEmail}`);
-                dispatch(resetCollection(getCollection));
-            })
-            .catch(error => console.log(error))
+                .then(res => res.json())
+                .then(async (json) => {
+                    reFetch(json);
+                    const getCollection = await fetcher(`http://localhost:3000/api/user/read/${userEmail}`);
+                    dispatch(resetCollection(getCollection));
+                })
+                .catch(error => console.log(error))
+        }
     }
 
     useEffect(() => {

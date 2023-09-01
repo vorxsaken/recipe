@@ -51,6 +51,7 @@ export default function Home() {
                         calorie={recipe.calorie}
                         ratings={recipe.ratings}
                         collection={recipe.collections}
+                        serving={recipe.servingTime}
                         asLink
                         link={`/?recipeDetails=${recipe.id}`}
                     />
@@ -86,15 +87,17 @@ export default function Home() {
     return (
         <div>
             <RecipeDetailsModal route="/" />
-            <Layout>
+            <Layout title="Home">
                 <div className={`min-h-[700px] flex flex-col justify-start items-center gap-8 py-10 overflow-hidden`}>
                     <div className="w-full flex justify-center items-center mt-10 md:mt-0">
                         <PileButton value={changeSelected} defaultValue="Recent">
                             <span>Recent</span>
-                            <span>Following</span>
+                            {
+                                userId && <span>Following</span>
+                            }
                         </PileButton>
                     </div>
-                    <div className="w-full flex justify-center md:justify-start items-start gap-2 md:gap-4 md:pl-10 flex-wrap">
+                    <div className="w-full flex justify-center px-3 md:justify-start items-start gap-2 md:gap-4 md:pl-10 flex-wrap">
                         {Recipes}
                         {loading}
                     </div>

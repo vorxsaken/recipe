@@ -17,7 +17,7 @@ export default function Collection() {
     const [showModal, setshowModal] = useState(false);
     const dispatch = useDispatch();
     const changeModal = () => { setshowModal(!showModal) }
-
+    
     const deleteCollection = () => {
         setLoadingDelete(true);
         fetch(`/api/collection/delete/${collections.id}`)
@@ -66,9 +66,9 @@ export default function Collection() {
                     </Button>
                 </div>
             </FullScreenContent>
-            <Layout>
-                <div className="w-full min-h-[700px] flex flex-col justify-start items-start gap-14 px-16 pt-20 pb-10">
-                    <div className="w-full flex justify-between items-center">
+            <Layout title={`${collections.name} Collection`}>
+                <div className="w-full min-h-[700px] flex flex-col justify-start items-start gap-14 md:px-16 px-0 pt-20 pb-10">
+                    <div className="w-full flex md:flex-row flex-col md:justify-between justify-start md:items-center items-center gap-4 md:gap-0">
                         <div className="text-4xl font-bold text-zinc-800">
                             {collections.name}
                         </div>
@@ -81,7 +81,7 @@ export default function Collection() {
                             </Button>
                         </div>
                     </div>
-                    <div className="w-full flex justify-start items-center gap-8 flex-wrap">
+                    <div className="w-full flex md:justify-start justify-center items-center gap-8 flex-wrap px-3">
                         {
                             collections.recipes.map((collection: any) => (
                                 <RecipeCard
@@ -89,6 +89,8 @@ export default function Collection() {
                                     image={collection.smallImage}
                                     calorie={collection.calorie}
                                     recipeId={collection.id}
+                                    ratings={collection.ratings}
+                                    collection={collection.collectionId}
                                     link={`/collections/collection?recipeDetails=${collection.id}`}
                                 />
                             ))

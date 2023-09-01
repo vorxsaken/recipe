@@ -9,7 +9,7 @@ export default function about({ recipes }: { recipes: any }) {
 
   return (
     <>
-      <Layout>
+      <Layout title="About">
         <Hero />
         <RecipeList recipes={recipes} />
         <FoodCategory />

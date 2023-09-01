@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react'
 interface textField {
     id?: any,
     showCounter?: boolean,
-    initValue?: number,
+    initValue?: number | string,
     autoGrow?: boolean,
     placeholder?: string,
     icon?: ReactNode,

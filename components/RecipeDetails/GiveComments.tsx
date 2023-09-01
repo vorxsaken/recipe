@@ -3,6 +3,7 @@ import TextField from '../TextField'
 import Button from '../Button'
 import { useDispatch } from 'react-redux'
 import { putComment, putReply, putRecentComment } from '@/store/Reducers/commentsReducer'
+import { useSelector } from 'react-redux'
 
 interface GiveCommentUI {
     id: string,
@@ -18,37 +19,43 @@ export default function GiveComments({ id, author, ownerId, reply, inquired, hid
     const [showButton, setShowButton] = useState(reply ? true : false);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+    const userId = useSelector((state: any) => state.user.userInfo.id);
 
     const sendComment = async () => {
-        const comment = (document.getElementById(id) as HTMLInputElement).value;
+        if (userId) {
+            let comment = (document.getElementById(id) as HTMLInputElement).value;
 
-        if (comment) {
-            setLoading(true);
-            await fetch(`http://localhost:3000/api/recipe/create/${reply ? 'reply' : 'comment'}`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    recipeId: id,
-                    comment: comment,
-                    author: author,
-                    ownerId: ownerId,
-                    inquired: reply ? inquired : ''
+            if (comment) {
+                setLoading(true);
+                await fetch(`http://localhost:3000/api/recipe/create/${reply ? 'reply' : 'comment'}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        recipeId: id,
+                        comment: comment,
+                        author: author,
+                        ownerId: ownerId,
+                        inquired: reply ? inquired : ''
+                    })
                 })
-            })
-                .then((data) => data.json())
-                .then((json) => {
-                    setLoading(false);
-                    if(reply) {
-                        dispatch(putReply(json));
-                        dispatch(putRecentComment(json))
-                    } else {
-                        dispatch(putComment(json))
-                    }
-                    hideReply && hideReply();
-                })
-                .catch((error) => {
-                    setLoading(false);
-                    console.log(error)
-                });
+                    .then((data) => data.json())
+                    .then((json) => {
+                        setLoading(false);
+                        setShowButton(false);
+                        (document.getElementById(id) as HTMLInputElement).value = ''
+                        
+                        if (reply) {
+                            dispatch(putReply(json));
+                            dispatch(putRecentComment(json))
+                        } else {
+                            dispatch(putComment(json))
+                        }
+                        hideReply && hideReply();
+                    })
+                    .catch((error) => {
+                        setLoading(false);
+                        console.log(error)
+                    });
+            }
         }
     }
 

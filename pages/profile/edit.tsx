@@ -47,16 +47,16 @@ export default function Edit() {
     }
 
     return (
-        <Layout>
-            <div className='min-h-[600px] flex flex-col justify-start items-center gap-10 pt-8 pb-32'>
+        <Layout title={`Edit User ${user.name}`}>
+            <div className='min-h-[600px] flex flex-col justify-start items-center gap-10 pt-8 pb-32 mt-16 md:mt-0 px-4'>
                 <SelectImage sm circleRounded onChange={input} value={user.image} />
-                <div className="w-[400px] flex flex-col gap-4">
+                <div className="w-full md:w-[400px] flex flex-col gap-4">
                     <div className="w-full text-xl font-bold">
                         Username
                     </div>
                     <TextField defaultValue={user.name} id='username' medium placeholder="input your desired username ..." />
                 </div>
-                <div className="w-[400px] flex flex-col gap-4">
+                <div className="w-full md:w-[400px] flex flex-col gap-4">
                     <div className="w-full text-xl font-bold">
                         Description
                     </div>
@@ -69,7 +69,7 @@ export default function Edit() {
                         showCounter
                     />
                 </div>
-                <div className="w-[400px] flex justify-center items-center">
+                <div className="w-full md:w-[400px] flex justify-center items-center">
                     <Button onClick={updateProfile} loading={loading}>
                         save
                     </Button>

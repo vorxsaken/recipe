@@ -20,7 +20,8 @@ export default function CommentCard({ commentId, comment, image, author, inquire
     const [showOptions, setshowOptions] = useState(false);
     const [showThreeDots, setshowThreeDots] = useState(false);
     const [loadingDelete, setloadingDelete] = useState(false);
-    const userEmail = useSelector((state: any) => state.user.userInfo.email)
+    const userEmail = useSelector((state: any) => state.user.userInfo.email);
+    const userId = useSelector((state: any) => state.user.userInfo.id);
     const ref = useRef(null)
     const dispatch = useDispatch();
 
@@ -86,7 +87,7 @@ export default function CommentCard({ commentId, comment, image, author, inquire
                 </span>
             </div>
             {
-                showThreeDots && (
+                (showThreeDots && userId) && (
                     <div className="right-0 text-slate-800 text-lg cursor-pointer relative">
                         <div className="p-2 rounded-full" onClick={() => setshowOptions(!showOptions)}>
                             <BsThreeDotsVertical />

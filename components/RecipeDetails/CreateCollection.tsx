@@ -18,19 +18,21 @@ export default function CreateCollection({ recipeId, show, changeShowEvent, succ
     const dispatch = useDispatch();
 
     const createCollection = async () => {
-        setloading(true);
-        const req = await fetch(`http://localhost:3000/api/collection/create`, {
-            method: 'POST',
-            body: JSON.stringify({
-                recipeId: recipeId,
-                ownerId: userId,
-                name: ((document.getElementById('collection_name') as any).value)
+        if(userId) {
+            setloading(true);
+            const req = await fetch(`http://localhost:3000/api/collection/create`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    recipeId: recipeId,
+                    ownerId: userId,
+                    name: ((document.getElementById('collection_name') as any).value)
+                })
             })
-        })
-        const res = await req.json();
-        setloading(false)
-        dispatch(mergeCollections([res]));
-        successFetchColl(res);
+            const res = await req.json();
+            setloading(false)
+            dispatch(mergeCollections([res]));
+            successFetchColl(res);
+        }
 
     }
 

@@ -13,6 +13,7 @@ export default function TitleRecipe({ recipeId, title, owner, ownerId }: { recip
     const [newCollection, setnewCollection] = useState<any>()
     const collections = useSelector((state: any) => state.user.collections);
     const [isSaved, setisSaved] = useState(false);
+    const userId = useSelector((state: any) => state.user.userInfo.id);
 
     useEffect(() => {
         if (collections) {
@@ -50,14 +51,18 @@ export default function TitleRecipe({ recipeId, title, owner, ownerId }: { recip
                     <Link href={`/profile/${ownerId}`}>{owner}</Link>
                 </span>
             </div>
-            <div
-                className={`${isSaved ? 'bg-red-100 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200'} group p-2 rounded-xl cursor-pointer`}
-                onClick={showSaveRecipeEvent}
-            >
-                <AiFillFolderAdd
-                    className={`text-3xl ${isSaved ? 'text-red-500 group-hover:text-red-600' : 'text-gray-500 group-hover:text-gray-600'}`}
-                />
-            </div>
+            {
+                userId && (
+                    <div
+                        className={`${isSaved ? 'bg-red-100 hover:bg-red-200' : 'bg-gray-100 hover:bg-gray-200'} group p-2 rounded-xl cursor-pointer`}
+                        onClick={showSaveRecipeEvent}
+                    >
+                        <AiFillFolderAdd
+                            className={`text-3xl ${isSaved ? 'text-red-500 group-hover:text-red-600' : 'text-gray-500 group-hover:text-gray-600'}`}
+                        />
+                    </div>
+                )
+            }
             <SaveRecipe
                 newColl={newCollection}
                 recipeId={recipeId}

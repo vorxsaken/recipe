@@ -21,7 +21,7 @@ export default function CommentInfo({ created, id, author, ownerId, inquired }: 
     }
 
     return (
-        <div className='pl-14 flex flex-col justify-start items-start gap-2'>
+        <div className='w-full pl-14 flex flex-col justify-start items-start gap-2'>
             <div className="text-[0.62rem] font-thin text-gray-500 flex justify-start items-start mt-1 gap-3">
                 <span>{getDate(created)}</span>
                 <span className="hover:text-gray-700 cursor-pointer" onClick={() => setshowReply(!showReply)}>Reply</span>

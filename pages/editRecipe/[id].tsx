@@ -10,6 +10,7 @@ import { AiFillWarning } from 'react-icons/ai'
 import SelectField from "@/components/SelectField"
 import { NextApiRequest, NextApiResponse } from "next"
 import Router from "next/router"
+import Head from "next/head"
 
 interface imageType {
     [key: string]: Blob,
@@ -70,7 +71,10 @@ export default function editRecipe({recipe}: {recipe: any}) {
     }
 
     return (
-        <div className="min-h-[700px] flex flex-col justify-start items-center gap-4 pb-20">
+        <div className="min-h-[700px] flex flex-col justify-start items-center gap-4 pb-20 px-4">
+            <Head>
+                <title>Edit {recipe.title}</title>
+            </Head>
             <FullScreenContent show={showAlertModal} bg onChangeState={onchangeAlertModal}>
                 <div className="flex flex-col gap-8 justify-center items-center">
                     <AiFillWarning className="text-8xl text-red-600" />
@@ -85,7 +89,7 @@ export default function editRecipe({recipe}: {recipe: any}) {
                     Post
                 </Button>
             </div>
-            <div className="w-[500px] flex justify-start items-start gap-8">
+            <div className="w-full md:w-[500px] flex justify-start items-start gap-8">
                 <TextField
                     id='title'
                     placeholder="Give This Recipe A Name"
@@ -95,20 +99,20 @@ export default function editRecipe({recipe}: {recipe: any}) {
                     className="placeholder:font-bold outline-none text-2xl resize-none font-black" />
             </div>
             <SelectImage onChange={addImage} value={recipe.bigImage} />
-            <div className="w-[500px] flex flex-col gap-6 mt-10">
+            <div className="w-full md:w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
                     Basic Information
                 </div>
                 <TextField id='description' initValue={recipe.description} textArea placeholder="add description ..." autoGrow />
-                <TextField id='calorie' initValue={recipe.calorie} placeholder="add Calorie ..." textArea borderLess number />
+                <TextField id='calorie' initValue={recipe.calorie} placeholder="add Calorie ..." textArea borderLess number  autoGrow/>
             </div>
-            <div className="w-[500px] flex flex-col gap-6 mt-10">
+            <div className="w-full md:w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
                     Categories
                 </div>
                 <SelectField value={recipe.categories} multiple options={options} placeholder='select categories' setSelection={addCategories} />
             </div>
-            <div className="w-[500px] flex flex-col gap-6 mt-10">
+            <div className="w-full md:w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
                     Ingredients
                 </div>
@@ -116,7 +120,7 @@ export default function editRecipe({recipe}: {recipe: any}) {
                     <AddListIngredient value={recipe.ingredients} setIngredient={addIngredient} />
                 </div>
             </div>
-            <div className="w-[500px] flex flex-col gap-6 mt-10">
+            <div className="w-full md:w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
                     Instructions
                 </div>
@@ -131,7 +135,7 @@ export default function editRecipe({recipe}: {recipe: any}) {
 export const getServerSideProps = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query;
 
-    const getrecipe = await fetch(`http://localhost:3000/api/recipe/read/${id}`);
+    const getrecipe = await fetch(`http://localhost:3000/api/recipe/read/details/${id}`);
     const recipe = await getrecipe.json();
 
     return {

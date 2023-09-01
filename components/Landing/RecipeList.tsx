@@ -13,6 +13,7 @@ export default function RecipeList({ wrap, recipes }: { wrap?: boolean, recipes:
             calorie={recipe.calorie}
             ratings={recipe.ratings}
             collection={recipe.collections}
+            serving={recipe.servingTime}
             shallow
             link={`/about?recipeDetails=${recipe.id}`}
         />
