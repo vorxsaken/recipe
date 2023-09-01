@@ -83,16 +83,16 @@ export default function Collection() {
                     </div>
                     <div className="w-full flex md:justify-start justify-center items-center gap-8 flex-wrap px-3">
                         {
-                            collections.recipes.map((collection: any) => (
+                            collections?.recipes?.map((collection: any, index: any) => (
                                 <RecipeCard
-                                    key={collection.id}
-                                    title={collection.title}
-                                    image={collection.smallImage}
-                                    calorie={collection.calorie}
-                                    recipeId={collection.id}
-                                    ratings={collection.ratings}
-                                    collection={collection.collectionId}
-                                    link={`/collections/collection?recipeDetails=${collection.id}`}
+                                    key={collection?.id || index}
+                                    title={collection?.title || ''}
+                                    image={collection?.smallImage || ''}
+                                    calorie={collection?.calorie || ''}
+                                    recipeId={collection?.id || ''}
+                                    ratings={collection?.ratings || ''}
+                                    collection={collection?.collectionId || ''}
+                                    link={`/collections/collection?recipeDetails=${collection?.id || ''}`}
                                 />
                             ))
                         }
