@@ -66,11 +66,11 @@ export default function Collection() {
                     </Button>
                 </div>
             </FullScreenContent>
-            <Layout title={`${collections.name} Collection`}>
+            <Layout title={`${collections?.name || ''} Collection`}>
                 <div className="w-full min-h-[700px] flex flex-col justify-start items-start gap-14 md:px-16 px-0 pt-20 pb-10">
                     <div className="w-full flex md:flex-row flex-col md:justify-between justify-start md:items-center items-center gap-4 md:gap-0">
                         <div className="text-4xl font-bold text-zinc-800">
-                            {collections.name}
+                            {collections?.name || ''}
                         </div>
                         <div className="flex justify-center items-center gap-4">
                             <Button text onClick={deleteCollection} loading={loadingDelete}>
