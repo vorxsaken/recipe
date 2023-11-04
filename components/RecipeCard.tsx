@@ -52,7 +52,7 @@ export default function RecipeCard({ recipeId, image, title, calorie, serving, l
   }, [collections])
 
   return (
-    <div title={title} className='w-full h-72 md:w-60 md:h-56 flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
+    <div title={title} className='w-full h-72 md:w-[21vw] md:h-[35vh] flex flex-col flex-none justify-start items-center gap-2 border border-slate-300 
     overflow-hidden rounded-lg cursor-pointer relative group'>
       <Link scroll={false} shallow={shallow} href={link} as={isAs} className='w-full h-48 md:h-56 absolute top-0 z-10' />
       <div className={`w-auto absolute top-2 right-3 bg-gradient-to-b to-black z-10 flex justify-end 
