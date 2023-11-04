@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const getRecipe = await database.recipe.findMany({
                 skip: skip,
-                take: 10,
+                take: 20,
                 orderBy: {
                     created_at: 'desc'
                 },

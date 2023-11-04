@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             include: {
                 following: {
                     skip: skip,
-                    take: 30,
+                    take: 20,
                     select: {
                         userFollow: {
                             select: {

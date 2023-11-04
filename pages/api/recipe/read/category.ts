@@ -4,11 +4,13 @@ import { database } from "@/pages/api/_base";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { category, skip } = JSON.parse(req.body);
 
-
     try {
         const getCategory = await database.recipe.findMany({
-            take: 10,
+            take: 20,
             skip: skip,
+            orderBy: {
+                created_at: 'desc'
+            },
             where: {
                 categories: {
                     has: category
