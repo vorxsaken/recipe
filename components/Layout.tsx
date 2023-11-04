@@ -10,15 +10,16 @@ import Head from "next/head"
 export default function Layout({ children, title }: { children: ReactNode, title: string }) {
     const { data: session } = useSession();
     const isUserInfoFetched = useSelector((state: any) => state.user.isUserInfoFetched)
+    const headTitle = `${title} | Food Recipe`;
 
     if (!isUserInfoFetched) {
         store.dispatch(getUserInfo(session?.user?.email as string));
     }
-    
+
     return (
         <div className="">
             <Head>
-                <title>{title} | Food Recipe</title>
+                <title>{headTitle}</title>
             </Head>
             <Nav />
             <main className="md:mt-16 flex flex-col gap-10">
