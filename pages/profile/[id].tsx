@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from "next"
 import Layout from "@/components/Layout"
 import Image from "next/image"
 import RecipeCard from "@/components/RecipeCard"
 import Button from "@/components/Button"
 import { BsPlus, BsCheck2 } from 'react-icons/bs'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector } from "react-redux"
 import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 import Observer from "@/components/Observer"
@@ -13,7 +13,7 @@ import Link from "next/link";
 import FullScreenContent from "@/components/FullScreenContent";
 import InfiniteFetch from "@/components/InfiniteFetch";
 import Router from "next/router";
-import { setFollowing } from "@/store/Reducers/userReducer";
+import { mergeRecipes, setFollowing } from "@/store/Reducers/userReducer";
 import { useDispatch } from "react-redux";
 
 interface User {
@@ -84,8 +84,7 @@ function FollowButton({ following, userId, userDotId, successFollow, successUnfo
 
 function FollowListModal({ showModal, closeModal, follower, id, follButtonCallback }: FollowListModalUI) {
     const localUserFollow = useSelector((state: any) => state.user.userInfo);
-    const [showLoad, setShowLoad] = useState(true);
-    var skip = 0;
+    const ref = useRef();
 
     const touser = (id: string) => {
         Router.push(`/profile/${id}`);
@@ -95,8 +94,8 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
     const followButtonSuccess = (num: number) => {
         if (localUserFollow.id === id) follButtonCallback(num)
     }
-    const increaseSkip = () => skip = skip + 10;
     const successView = (results: any) => {
+        if (results.length < 20) {(ref.current as any).stopLoad()}
         return results.map((result: any, index: any) => (
             <div key={index} className="w-full flex justify-between md:items-start items-center">
                 <div onClick={() => touser(result.userFollow.user.id)} className="flex justify-center items-center gap-3 cursor-pointer">
@@ -125,13 +124,15 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
     const emptyView =
         <div className="w-full flex justify-start items-start text-sm text-slate-700">
             {
-                follower ? "theres no follower" : "not following anyone"
+                follower ? "no follower" : "not following anyone"
             }
         </div>
 
-    useEffect(() => {
-        if (showLoad) skip = 0;
-    }, [showLoad])
+    const endView = 
+        <div className="w-full flex justify-start mt-2">
+            end of list ...
+        </div>
+
 
     return (
         <FullScreenContent bg show={showModal} onChangeState={closeModal} >
@@ -144,18 +145,12 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
                 <span className="w-full bg-gradient-to-r from-white/50 via-gray-400 to-white/50 h-[0.8px] rounded-2xl" />
                 <div className="w-full max-h-80 overflow-auto flex flex-col justify-start items-start gap-4">
                     <InfiniteFetch
+                        ref={ref}
                         url={`/api/user/read/${follower ? 'follower' : 'following'}`}
-                        body={{
-                            method: 'POST',
-                            body: JSON.stringify({
-                                userId: id,
-                                skip: skip
-                            })
-                        }}
+                        body={{userId: id}}
                         emptyView={emptyView}
                         successView={(result) => successView(result)}
-                        increaseSkip={increaseSkip}
-                        endPage={10}
+                        endPage={1}
                     />
                 </div>
             </div>
@@ -174,13 +169,13 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     const [followingOrFollower, setFollowingOrFollower] = useState(false);
     const [isNotFollow, setIsNotFollow] = useState(true);
     const [showLoad, setshowLoad] = useState(true);
-    const skip = useSelector((state: any) => state.user.recipeSkip);
     const CHECK_END_OF_PAGE_VARIABLE = useSelector((state: any) => state.recipe.endPage);
     const CHECK_IF_FOLLOW = localFollowing.some((follow: any) => follow.userFollow.user.id === user.id) || false;
     const showFollowModal = (follower: boolean) => {
         setFollowingOrFollower(follower)
         setshowFollow(true)
     }
+    var skip = 0;
 
     const follButtonCallback = (num: number) => {
         setFollowingCount(followingCount + num);
@@ -190,14 +185,19 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         fetch('/api/user/read/recipe', {
             method: 'POST',
             body: JSON.stringify({
-                skip: skip,
+                skip,
                 userId: user.id
             })
         })
             .then(res => res.json())
             .then(json => {
-                if (json.length < CHECK_END_OF_PAGE_VARIABLE) setshowLoad(false);
-                setuserRecipe([...userRecipe, ...json]);
+                console.log(json);
+                if (json.length < CHECK_END_OF_PAGE_VARIABLE) {
+                    setshowLoad(false);
+                } else {
+                    setuserRecipe((prev: any) => {return prev.concat(json)});
+                    skip += 20;
+                }
             })
             .catch(error => console.log(error))
     }
@@ -222,7 +222,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     }
 
     const recipes = userRecipe.length > 0 && (
-        <div className="w-full flex flex-col justify-center items-center md:items-start gap-4 pl-0 md:pl-20">
+        <div className="w-[90%] flex flex-col justify-center items-center md:items-start gap-4 pb-20">
             <div className="text-xl font-bold text-zinc-800">
                 Recipes
             </div>

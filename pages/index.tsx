@@ -1,37 +1,51 @@
 import Layout from "@/components/Layout"
 import PileButton from "@/components/PileButton"
 import RecipeCard from "@/components/RecipeCard"
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 import Observer from "@/components/Observer"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { addMultiple, selectAll, emptyRecipe } from "@/store/Reducers/recipeReducer"
+import { addMultiple, selectAll, emptyRecipe, skipRecipe } from "@/store/Reducers/recipeReducer"
 
 export default function Home() {
     const dispatch = useDispatch();
     const [showLoad, setShowLoad] = useState(true);
     const [selected, setSelected] = useState('');
-    const userId = useSelector((state: any) => state.user.userInfo.id);
-    const SKIP_PAGE = useSelector((state: any) => state.user.recipeSkip);
-    const CHECK_END_OF_PAGE = useSelector((state: any) => state.recipe.endPage);
+    const id = useSelector((state: any) => state.user.userInfo.id);
     const recipes = useSelector(state => selectAll(state));
+    const endPage = useSelector((state: any) => state.recipe.endPage);
+    const skip = useSelector((state: any) => state.recipe.skip);
+    const localSkipRecipe = useRef(skip);
+    const didUpdate = useRef(false);
 
     const fetchRecipe = () => {
         fetch(`/api/recipe/read/${selected === 'Following' ? 'following' : ''}`, {
             method: 'POST',
             body: JSON.stringify({
-                skip: SKIP_PAGE,
-                id: userId
+                skip: localSkipRecipe.current,
+                id
             })
         })
             .then(res => res.json())
             .then(json => {
-                if (json.length < CHECK_END_OF_PAGE) setShowLoad(false);
-                dispatch(addMultiple(json));
+                if (json.length < endPage) {
+                    setShowLoad(false);
+                } else {
+                    dispatch(addMultiple(json));
+                    dispatch(skipRecipe(20));
+                }
             })
             .catch(error => console.log(error))
     }
+
+    useEffect(() => {
+        if (didUpdate.current && skip != 0) {
+            localSkipRecipe.current += 20;
+        } else {
+            didUpdate.current = true
+        }
+    }, [skip])
 
     const changeSelected = (sel: any) => {
         setShowLoad(true);
@@ -93,11 +107,11 @@ export default function Home() {
                         <PileButton value={changeSelected} defaultValue="Recent">
                             <span>Recent</span>
                             {
-                                userId && <span>Following</span>
+                                id && <span>Following</span>
                             }
                         </PileButton>
                     </div>
-                    <div className="w-full flex justify-center px-3 md:justify-start items-start gap-2 md:gap-4 md:pl-10 flex-wrap">
+                    <div className="w-full md:w-[90vw] flex justify-center px-3 md:justify-start items-start gap-2 md:gap-4 flex-wrap ml-0 md:ml-[1%]">
                         {Recipes}
                         {loading}
                     </div>
