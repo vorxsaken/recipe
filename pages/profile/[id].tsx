@@ -6,15 +6,16 @@ import RecipeCard from "@/components/RecipeCard"
 import Button from "@/components/Button"
 import { BsPlus, BsCheck2 } from 'react-icons/bs'
 import { useState, useEffect, useRef } from 'react'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 import Observer from "@/components/Observer"
 import Link from "next/link";
 import FullScreenContent from "@/components/FullScreenContent";
 import InfiniteFetch from "@/components/InfiniteFetch";
 import Router from "next/router";
-import { mergeRecipes, setFollowing } from "@/store/Reducers/userReducer";
-import { useDispatch } from "react-redux";
+import { getUserInfo, setFollowing } from "@/store/Reducers/userReducer";
+import { useSession } from 'next-auth/react'
+import store from '@/store'
 
 interface User {
     id: string,
@@ -95,8 +96,7 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
         if (localUserFollow.id === id) follButtonCallback(num)
     }
     const successView = (results: any) => {
-        if (results.length < 20) {(ref.current as any).stopLoad()}
-        console.log(results);
+        if (results.length < 20) { (ref.current as any).stopLoad() }
         return results.map((result: any, index: any) => (
             <div key={index} className="w-full flex justify-between md:items-start items-center">
                 <div onClick={() => touser(result.userFollow.user.id)} className="flex justify-center items-center gap-3 cursor-pointer">
@@ -142,7 +142,7 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
                     <InfiniteFetch
                         ref={ref}
                         url={`/api/user/read/${follower ? 'follower' : 'following'}`}
-                        body={{userId: id}}
+                        body={{ userId: id }}
                         emptyView={emptyView}
                         successView={(result) => successView(result)}
                         endPage={1}
@@ -170,7 +170,8 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         setFollowingOrFollower(follower)
         setshowFollow(true)
     }
-    var skip = 0;
+    const { data: session } = useSession();
+    const skip = useRef(0)
 
     const follButtonCallback = (num: number) => {
         setFollowingCount(followingCount + num);
@@ -180,7 +181,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         fetch('/api/user/read/recipe', {
             method: 'POST',
             body: JSON.stringify({
-                skip,
+                skip: skip.current,
                 userId: user.id
             })
         })
@@ -189,8 +190,8 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
                 if (json.length < CHECK_END_OF_PAGE_VARIABLE) {
                     setshowLoad(false);
                 } else {
-                    setuserRecipe((prev: any) => {return prev.concat(json)});
-                    skip += 20;
+                    setuserRecipe((prev: any) => { return prev.concat(json) });
+                    skip.current += 20;
                 }
             })
             .catch(error => console.log(error))
@@ -210,6 +211,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
                     setIsNotFollow(unfollow);
                     setfollowerCount(unfollow ? followerCount - 1 : followerCount + 1);
                     setfollowLoading(false);
+                    store.dispatch(getUserInfo(session?.user?.email as string));
                 })
                 .catch(error => console.log(error));
         }
@@ -280,11 +282,15 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     )
 
     useEffect(() => {
+        setshowLoad(false);
+        skip.current = 0;
         setuserRecipe([]);
-        setshowLoad(true);
         setfollowerCount(foll?._count?.follower || 0);
         setFollowingCount(foll?._count?.following || 0);
         CHECK_IF_FOLLOW ? setIsNotFollow(false) : setIsNotFollow(true);
+        setTimeout(() => {
+            setshowLoad(true)
+        }, 100);
     }, [user.id])
 
     return (
@@ -347,7 +353,7 @@ export const getServerSideProps = async (req: NextApiRequest, res: NextApiRespon
             id: true,
             name: true,
             image: true,
-            description: true
+            description: true,
         }
     })
 
