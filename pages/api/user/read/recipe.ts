@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ownerId: userId as string
             },
             skip: skip,
-            take: 10,
+            take: 20,
             orderBy: {
                 created_at: 'desc'
             }
