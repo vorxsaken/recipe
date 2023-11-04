@@ -1,15 +1,12 @@
-import { ReactElement, useState, forwardRef, useImperativeHandle } from 'react'
+import { ReactElement, useState, forwardRef, useImperativeHandle, useRef, useEffect } from 'react'
 import Observer from './Observer'
 
 interface InfiniteViewUI {
     url: string,
-    body: {
-        method: string,
-        body: any
-    },
+    body: { [name: string]: any },
     emptyView: ReactElement,
+    endView?: ReactElement,
     successView: (res: any) => ReactElement,
-    increaseSkip: () => void,
     endPage: number
 }
 
@@ -17,43 +14,54 @@ const InfiniteFetch = forwardRef(({
     url,
     body,
     emptyView,
+    endView,
     successView,
-    increaseSkip,
-    endPage
+    endPage,
 }: InfiniteViewUI, ref) => {
-    const [data, setData] = useState<any[]>([]);
-    const [showLoad, setShowLoad] = useState(true);
+    const [key, setkey] = useState(0)
+    const [datas, setdatas] = useState<any>([]);
+    const [showLoad, setshowLoad] = useState(true)
+    const endOfView = endView || <div></div>;
+    var skip = 0;
 
-    const fetcher = () => {
-        fetch(url, body)
-            .then(req => req.json())
-            .then(res => {
-                if (res.length < endPage) setShowLoad(false);
-                setData([...data, ...res])
-                increaseSkip();
-            })
-            .catch(error => console.log(error));
+    const fetcher = async () => {
+        console.log(skip);
+        const recipe = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({ ...body, skip })
+        });
+
+        const json = await recipe.json();
+
+        if (json.length < endPage) {
+            setshowLoad(false);
+        } else {
+            const currentData = successView(json) as any;
+            setdatas((prev: any) => { return [...prev, ...currentData] })
+            skip += 20;
+        }
     }
 
-    const datas = data.length > 0 && successView(data);
     const loading = showLoad ? (
         <>
             <Observer trigger={() => fetcher()} small />
         </>
-    ) : data.length === 0 && emptyView
+    ) : datas.length === 0 ? emptyView : endOfView
 
     useImperativeHandle(ref, () => ({
         refetch() {
-            setData([])
-            setShowLoad(true);
-        }
+            setdatas([])
+            setshowLoad(true);
+            setkey((prev) => prev + 1);
+        },
+        stopLoad() { setshowLoad(false) }
     }))
-    
+
     return (
-        <>
+        <div className='w-full flex justify-start items-start gap-4 flex-wrap' key={key}>
             {datas}
             {loading}
-        </>
+        </div>
     )
 });
 
