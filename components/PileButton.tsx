@@ -14,7 +14,7 @@ export default function PileButton({ children, value, defaultValue }: { children
                 {
                     newChildren?.map((child, index) => (
                         <div key={index} className={`${index !== children.length - 1 ? 'border-r border-slate-300' : 'border-0'} 
-                        ${selected === (child as any).props?.children ? 'bg-zinc-100 text-red-500 ' : 'text-zinc-700'} 
+                        ${selected === (child as any)?.props?.children ? 'bg-zinc-100 text-red-500 ' : 'text-zinc-700'} 
                         ${newChildren.length > 1 ? 'px-6' : 'px-10'} hover:text-red-500 h-full w-full text-xs 
                         cursor-pointer flex justify-center items-center`}
                             onClick={(e) => getselected((child as any).props.children)}>
