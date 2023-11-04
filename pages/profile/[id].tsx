@@ -96,6 +96,7 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
     }
     const successView = (results: any) => {
         if (results.length < 20) {(ref.current as any).stopLoad()}
+        console.log(results);
         return results.map((result: any, index: any) => (
             <div key={index} className="w-full flex justify-between md:items-start items-center">
                 <div onClick={() => touser(result.userFollow.user.id)} className="flex justify-center items-center gap-3 cursor-pointer">
@@ -127,12 +128,6 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
                 follower ? "no follower" : "not following anyone"
             }
         </div>
-
-    const endView = 
-        <div className="w-full flex justify-start mt-2">
-            end of list ...
-        </div>
-
 
     return (
         <FullScreenContent bg show={showModal} onChangeState={closeModal} >
@@ -191,7 +186,6 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         })
             .then(res => res.json())
             .then(json => {
-                console.log(json);
                 if (json.length < CHECK_END_OF_PAGE_VARIABLE) {
                     setshowLoad(false);
                 } else {

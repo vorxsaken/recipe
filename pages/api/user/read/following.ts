@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
             select: {
                 following: {
-                    take: 10,
+                    take: 20,
                     skip: skip,
                     select: {
                         userFollow: {
