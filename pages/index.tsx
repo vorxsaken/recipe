@@ -6,12 +6,12 @@ import RecipeDetailsModal from "@/components/RecipeDetails/RecipeDetailsModal"
 import Observer from "@/components/Observer"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { addMultiple, selectAll, emptyRecipe, skipRecipe } from "@/store/Reducers/recipeReducer"
+import { addMultiple, selectAll, emptyRecipe, skipRecipe, resetSkip } from "@/store/Reducers/recipeReducer"
 
 export default function Home() {
     const dispatch = useDispatch();
     const [showLoad, setShowLoad] = useState(true);
-    const [selected, setSelected] = useState('');
+    const selected = useRef('');
     const id = useSelector((state: any) => state.user.userInfo.id);
     const recipes = useSelector(state => selectAll(state));
     const endPage = useSelector((state: any) => state.recipe.endPage);
@@ -20,7 +20,7 @@ export default function Home() {
     const didUpdate = useRef(false);
 
     const fetchRecipe = () => {
-        fetch(`/api/recipe/read/${selected === 'Following' ? 'following' : ''}`, {
+        fetch(`/api/recipe/read/${selected.current === 'Following' ? 'following' : ''}`, {
             method: 'POST',
             body: JSON.stringify({
                 skip: localSkipRecipe.current,
@@ -47,10 +47,13 @@ export default function Home() {
         }
     }, [skip])
 
-    const changeSelected = (sel: any) => {
-        setShowLoad(true);
+    const changeSelected = async (sel: any) => {
+        setShowLoad(false);
         dispatch(emptyRecipe());
-        setSelected(sel);
+        dispatch(resetSkip());
+        localSkipRecipe.current = 0;
+        selected.current = sel;
+        setShowLoad(true);
     }
 
     const Recipes = recipes.length > 0 && (

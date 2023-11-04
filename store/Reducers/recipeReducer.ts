@@ -20,8 +20,13 @@ const recipeSlice = createSlice({
             let currentSkip = state.skip;
             state.skip = currentSkip + actions.payload;
         },
-        emptyRecipe: recipeAdapter.removeAll,
-        removeRecipe(state, actions){
+        resetSkip: (state) => {
+            state.skip = 0;
+        },
+        emptyRecipe: (state) => {
+            recipeAdapter.removeAll(state);
+        },
+        removeRecipe(state, actions) {
             recipeAdapter.removeOne(state, actions.payload);
         },
         addRecipe: recipeAdapter.addOne,
@@ -32,6 +37,6 @@ const recipeSlice = createSlice({
 export default recipeSlice.reducer
 
 export const { selectAll } = recipeAdapter.getSelectors((state: any) => state.recipe);
-export const { addMultiple, addRecipe, updateRecipe, emptyRecipe, removeRecipe, skipRecipe} = recipeSlice.actions
+export const { addMultiple, addRecipe, updateRecipe, emptyRecipe, removeRecipe, skipRecipe, resetSkip } = recipeSlice.actions
 
 export const selectAllRecentRecipe = recipeAdapter.getSelectors((state: any) => state.recipe)
