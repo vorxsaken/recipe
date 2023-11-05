@@ -8,7 +8,7 @@ export default function BottomMenu() {
     const id = useSelector((state: any) => state.user.userInfo.id);
 
     return (
-        <div className="w-full px-6 py-4 flex justify-between items-center border-t-2 border-slate-100 md:hidden">
+        <div className="w-full px-6 py-4 flex justify-between items-center bg-white md:hidden ">
             <Link href={'/'} className="flex flex-col items-center justify-center">
                 <AiOutlineHome className="text-2xl" />
                 <span className="text-sm">Home</span>

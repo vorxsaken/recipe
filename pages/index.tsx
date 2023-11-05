@@ -53,7 +53,7 @@ export default function Home() {
         dispatch(resetSkip());
         localSkipRecipe.current = 0;
         selected.current = sel;
-        setShowLoad(true);
+        setTimeout(() => setShowLoad(true), 50)
     }
 
     const Recipes = recipes.length > 0 && (

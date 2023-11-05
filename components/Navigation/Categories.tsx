@@ -47,7 +47,7 @@ function Categories({ children }: { children?: ReactNode }) {
                 {children ? children : 'Categories'}
             </div>
             <div
-                className={`w-80 h-72 justify-center items-center gap-2 absolute -top-72 -left-60 md:-left-0 md:top-9 flex-wrap ${Open ? 'flex' : 'hidden'} 
+                className={`w-80 h-72 justify-center items-center gap-2 absolute -top-[19.5rem] -left-60 md:-left-0 md:top-9 flex-wrap ${Open ? 'flex' : 'hidden'} 
                 rounded-xl py-2 bg-white drop-shadow-lg`}
                 onMouseOver={open}
             >

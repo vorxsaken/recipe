@@ -27,7 +27,7 @@ export default function UserMenu() {
 
     return (
         <div ref={ref} className='relative'>
-            <button onClick={() => setshowMenu(!showMenu)} className='w-10 h-10 md:w-9 md:h-9 rounded-full overflow-hidden cursor-pointer relative bg-gray-500 peer'>
+            <button onClick={() => setshowMenu(!showMenu)} className='w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden cursor-pointer relative bg-gray-500 peer'>
                 <Image src={user.image} alt='avatar' fill className='object-cover' />
             </button>
             {
