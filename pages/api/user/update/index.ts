@@ -13,6 +13,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 name: username,
                 description: description,
                 image: image
+            },
+            include: {
+                collections: true,
+                follower: {
+                    select: {
+                        userFollow: {
+                            select: {
+                                user: true
+                            }
+                        }
+                    }
+                },
+                following: {
+                    select: {
+                        userFollow: {
+                            select: {
+                                user: true
+                            }
+                        }
+                    }
+                }
             }
         }).catch(error => { throw new Error(error) });
 

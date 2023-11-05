@@ -14,6 +14,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ingredients
     } = JSON.parse(req.body)
 
+    const filterIngredients = ingredients.map((ingredient: any) => { return {
+        id: ingredient?.id,
+        name: ingredient?.name,
+        quantity: ingredient?.quantity,
+        unit: ingredient?.unit
+    }})
+
     try {
         await database.ingredient.deleteMany({
             where: {
@@ -34,7 +41,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 bigImage: bigImage,
                 instructions: instructions,
                 ingredients: {
-                    create: ingredients
+                    createMany: {
+                        data: filterIngredients
+                    }
                 }
             },
             include: {

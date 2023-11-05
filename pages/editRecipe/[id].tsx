@@ -16,7 +16,7 @@ interface imageType {
     [key: string]: Blob,
 }
 
-export default function EditRecipe({recipe}: {recipe: any}) {
+export default function EditRecipe({ recipe }: { recipe: any }) {
     const [image, setimage] = useState<imageType>({});
     const [Ingredients, setIngredients] = useState<Object[]>([])
     const [loadingButton, setloadingButton] = useState(false);
@@ -42,7 +42,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
         const CalorieTextField = document.getElementById('calorie') as any;
         const instructionsRefAny = instructionsRef.current as any;
         instructionsRefAny.getInstructions();
-        const CHECK_IF_SOME_FIELDS_EMPTY = !TitleTextField.value || !DescriptionTextField.value || !CalorieTextField.value  || instructions.some(i => i === '') || Ingredients.length === 0 || categories.length === 0;
+        const CHECK_IF_SOME_FIELDS_EMPTY = !TitleTextField.value || !DescriptionTextField.value || !CalorieTextField.value || instructions.some(i => i === '') || Ingredients.length === 0 || categories.length === 0;
 
         if (CHECK_IF_SOME_FIELDS_EMPTY) {
             setshowAlertModal(true);
@@ -51,6 +51,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
         };
 
         const imageUrl = Object.keys(image).length > 0 ? await uploadImages(image.smallImage, image.bigImage) as any : {};
+
         fetch('/api/recipe/update', {
             method: 'POST',
             body: JSON.stringify({
@@ -82,11 +83,11 @@ export default function EditRecipe({recipe}: {recipe: any}) {
                 </div>
             </FullScreenContent>
             <div className="w-full flex justify-between items-center py-4 px-6">
-                <Button text onClick={() => Router.back() }>
+                <Button text onClick={() => Router.back()}>
                     Cancel
                 </Button>
                 <Button onClick={updateRecipe} loading={loadingButton}>
-                    Post
+                    Save
                 </Button>
             </div>
             <div className="w-full md:w-[500px] flex justify-start items-start gap-8">
@@ -104,7 +105,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
                     Basic Information
                 </div>
                 <TextField id='description' initValue={recipe.description} textArea placeholder="add description ..." autoGrow />
-                <TextField id='calorie' initValue={recipe.calorie} placeholder="add Calorie ..." textArea borderLess number  autoGrow/>
+                <TextField id='calorie' initValue={recipe.calorie} placeholder="add Calorie ..." textArea borderLess number autoGrow />
             </div>
             <div className="w-full md:w-[500px] flex flex-col gap-6 mt-10">
                 <div className="w-full text-2xl font-bold">
@@ -135,7 +136,7 @@ export default function EditRecipe({recipe}: {recipe: any}) {
 export const getServerSideProps = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query;
 
-    const getrecipe = await fetch(`/api/recipe/read/details/${id}`);
+    const getrecipe = await fetch(`${process.env.NEXTAUTH_URL}/api/recipe/read/details/${id}`);
     const recipe = await getrecipe.json();
 
     return {
