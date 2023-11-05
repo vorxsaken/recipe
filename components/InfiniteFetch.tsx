@@ -25,7 +25,6 @@ const InfiniteFetch = forwardRef(({
     var skip = 0;
 
     const fetcher = async () => {
-        console.log(skip);
         const recipe = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({ ...body, skip })
