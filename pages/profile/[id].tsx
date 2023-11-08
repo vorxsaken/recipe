@@ -84,7 +84,7 @@ function FollowButton({ following, userId, userDotId, successFollow, successUnfo
 }
 
 function FollowListModal({ showModal, closeModal, follower, id, follButtonCallback }: FollowListModalUI) {
-    const localUserFollow = useSelector((state: any) => state.user.userInfo);
+    const localUserFollow = useSelector((state: any) => state?.user?.userInfo);
     const ref = useRef();
 
     const touser = (id: string) => {
@@ -93,26 +93,26 @@ function FollowListModal({ showModal, closeModal, follower, id, follButtonCallba
     }
 
     const followButtonSuccess = (num: number) => {
-        if (localUserFollow.id === id) follButtonCallback(num)
+        if (localUserFollow?.id === id) follButtonCallback(num)
     }
     const successView = (results: any) => {
-        if (results.length < 20) { (ref.current as any).stopLoad() }
-        return results.map((result: any, index: any) => (
+        if (results.length < 20) { (ref?.current as any).stopLoad() }
+        return results?.map((result: any, index: any) => (
             <div key={index} className="w-full flex justify-between md:items-start items-center">
-                <div onClick={() => touser(result.userFollow.user.id)} className="flex justify-center items-center gap-3 cursor-pointer">
+                <div onClick={() => touser(result?.userFollow?.user?.id)} className="flex justify-center items-center gap-3 cursor-pointer">
                     <div className="w-12 h-12 md:w-9 md:h-9 rounded-full overflow-hidden relative">
-                        <Image src={result.userFollow.user.image} alt='avatar' fill className="object-cover" />
+                        <Image src={result?.userFollow?.user?.image} alt='avatar' fill className="object-cover" />
                     </div>
                     <span className="font-bold text-slate-800 md:text-sm text-xl">
-                        {result.userFollow.user.name}
+                        {result?.userFollow?.user?.name}
                     </span>
                 </div>
                 {
-                    localUserFollow.id !== result.userFollow.user.id && (
+                    localUserFollow?.id !== result?.userFollow?.user?.id && (
                         <FollowButton
-                            userId={localUserFollow.id}
-                            userDotId={result.userFollow.user.id}
-                            following={localUserFollow.following.some((foll: any) => foll.userFollow.user.id === result.userFollow.user.id)}
+                            userId={localUserFollow?.id}
+                            userDotId={result?.userFollow?.user?.id}
+                            following={localUserFollow?.following?.some((foll: any) => foll?.userFollow?.user?.id === result?.userFollow?.user?.id)}
                             successFollow={() => followButtonSuccess(1)}
                             successUnfollow={() => followButtonSuccess(-1)}
                         />
@@ -290,7 +290,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
         CHECK_IF_FOLLOW ? setIsNotFollow(false) : setIsNotFollow(true);
         setTimeout(() => {
             setshowLoad(true)
-        }, 100);
+        }, 1000);
     }, [user.id])
 
     return (
