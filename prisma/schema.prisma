@@ -59,7 +59,7 @@ model Follower {
     id             String     @id  @default(auto()) @map("_id") @db.ObjectId
     userFollow     UserFollow?
     idString       String
-    user           User       @relation(fields: [userId], references: [id])
+    user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId         String     @db.ObjectId     
     @@map("followers")
 }
@@ -68,7 +68,7 @@ model Following {
     id             String     @id  @default(auto()) @map("_id") @db.ObjectId
     userFollow     UserFollow?
     idString       String
-    user           User       @relation(fields: [userId], references: [id])
+    user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId         String     @db.ObjectId 
     @@map("followings")
 }
@@ -99,7 +99,7 @@ model Collection {
   name        String
   recipes     Recipe[]    @relation(fields: [recipeId], references: [id])
   recipeId    String[]    @db.ObjectId
-  owner       User        @relation(fields: [ownerId], references: [id])
+  owner       User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId     String      @db.ObjectId
   @@map("collections")
 }
