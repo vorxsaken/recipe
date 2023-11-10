@@ -163,7 +163,7 @@ export default function Profile({ user, totalRecipes, foll }: { user: User, tota
     const [showFollow, setshowFollow] = useState(false);
     const [followingOrFollower, setFollowingOrFollower] = useState(false);
     const [isNotFollow, setIsNotFollow] = useState(true);
-    const [showLoad, setshowLoad] = useState(true);
+    const [showLoad, setshowLoad] = useState(false);
     const CHECK_END_OF_PAGE_VARIABLE = useSelector((state: any) => state.recipe.endPage);
     const CHECK_IF_FOLLOW = localFollowing.some((follow: any) => follow.userFollow.user.id === user.id) || false;
     const showFollowModal = (follower: boolean) => {
